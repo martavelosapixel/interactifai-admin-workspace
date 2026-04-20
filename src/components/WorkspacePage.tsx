@@ -16,10 +16,12 @@ interface RolePermissions {
 
 type GraphicPermissionMap = Record<string, Record<string, RolePermissions>>
 
-interface ColorPalette {
+interface ColorTheme {
   id: string
   name: string
-  colors: string[]
+  primary: string[]
+  secondary: string[]
+  font: string[]
 }
 
 const PERMISSION_LABELS: { key: PermissionKey; label: string }[] = [
@@ -250,10 +252,14 @@ const GRAPHICS: Graphic[] = [
   { id: 'sponsor-banner', name: 'Sponsor Banner',   description: 'Rotating sponsor logos and branded ad placements during the meeting', badge: 'enterprise', Icon: SponsorBannerIcon  },
 ]
 
-const BRAND_PALETTES_DEFAULT: ColorPalette[] = [
-  { id: 'primary',   name: 'Primary Colors',   colors: ['#615fff', '#0283ff'] },
-  { id: 'secondary', name: 'Secondary Colors',  colors: ['#ffa726', '#ef4444', '#10b981'] },
-  { id: 'font',      name: 'Font Colors',       colors: ['#fafaf9', '#94a3b8'] },
+const BRAND_THEMES_DEFAULT: ColorTheme[] = [
+  {
+    id: 'theme-default',
+    name: 'Default Theme',
+    primary:   ['#615fff', '#0283ff'],
+    secondary: ['#ffa726', '#ef4444', '#10b981'],
+    font:      ['#fafaf9', '#94a3b8'],
+  },
 ]
 
 // ─── Toggle ───────────────────────────────────────────────────────────────────
@@ -295,6 +301,180 @@ function Toggle({ on, onChange, size = 'md' }: ToggleProps) {
   )
 }
 
+// ─── Graphic mini preview ─────────────────────────────────────────────────────
+
+function GraphicMiniPreview({ id, enabled }: { id: string; enabled: boolean }) {
+  const s: React.CSSProperties = {
+    width: 80, height: 48, borderRadius: 6, overflow: 'hidden', flexShrink: 0,
+    background: '#141518', border: '1px solid rgba(255,255,255,0.08)',
+    opacity: enabled ? 1 : 0.35, transition: 'opacity 0.2s',
+    position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center',
+  }
+
+  if (id === 'nametag') return (
+    <div style={s}>
+      <div style={{ width: 62, background: 'white', borderRadius: 5, overflow: 'hidden', boxShadow: '0 2px 6px rgba(0,0,0,0.5)' }}>
+        <div style={{ height: 3, background: '#615fff' }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '4px 6px' }}>
+          <div style={{ width: 14, height: 14, borderRadius: '50%', background: '#2a2b2e', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <span style={{ fontSize: 5, fontWeight: 700, color: '#ffa726' }}>JS</span>
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ height: 4, background: '#1a1a1a', borderRadius: 2, marginBottom: 2, width: '80%' }} />
+            <div style={{ height: 3, background: '#bbb', borderRadius: 2, marginBottom: 2, width: '65%' }} />
+            <div style={{ height: 3, background: '#615fff', borderRadius: 2, width: '50%' }} />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+
+  if (id === 'logo') return (
+    <div style={s}>
+      <div style={{ width: 28, height: 28, borderRadius: 6, background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <span style={{ fontSize: 13, fontWeight: 800, color: '#fafaf9', letterSpacing: '-0.5px' }}>B</span>
+      </div>
+    </div>
+  )
+
+  if (id === 'ticker') return (
+    <div style={s}>
+      <div style={{ position: 'absolute', bottom: 8, left: 4, right: 4, background: '#615fff', borderRadius: 3, padding: '3px 5px', display: 'flex', alignItems: 'center', gap: 4 }}>
+        <span style={{ fontSize: 5, fontWeight: 800, color: 'white', letterSpacing: '0.05em', flexShrink: 0 }}>LIVE</span>
+        <div style={{ width: 1, height: 8, background: 'rgba(255,255,255,0.4)' }} />
+        <div style={{ flex: 1, height: 3, background: 'rgba(255,255,255,0.6)', borderRadius: 2 }} />
+      </div>
+    </div>
+  )
+
+  if (id === 'timer') return (
+    <div style={s}>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ fontSize: 18, fontWeight: 800, color: '#fafaf9', lineHeight: 1, fontVariantNumeric: 'tabular-nums' }}>00:30</div>
+        <div style={{ fontSize: 6, color: 'rgba(255,255,255,0.4)', marginTop: 2, letterSpacing: '0.1em' }}>COUNTDOWN</div>
+      </div>
+    </div>
+  )
+
+  if (id === 'agenda') return (
+    <div style={s}>
+      <div style={{ width: 56, display: 'flex', flexDirection: 'column', gap: 4 }}>
+        {[80, 65, 50].map((w, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <div style={{ width: 5, height: 5, borderRadius: '50%', background: i === 0 ? '#615fff' : 'rgba(255,255,255,0.2)', flexShrink: 0 }} />
+            <div style={{ height: 3, background: i === 0 ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.25)', borderRadius: 2, width: `${w}%`, flex: '0 0 auto' }} />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+
+  if (id === 'qa') return (
+    <div style={s}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        <div style={{ background: 'rgba(255,255,255,0.08)', borderRadius: '6px 6px 6px 2px', padding: '4px 7px' }}>
+          <div style={{ height: 3, width: 40, background: 'rgba(255,255,255,0.5)', borderRadius: 2 }} />
+        </div>
+        <div style={{ background: 'rgba(97,95,255,0.3)', borderRadius: '6px 6px 2px 6px', padding: '4px 7px', alignSelf: 'flex-end' }}>
+          <div style={{ height: 3, width: 28, background: 'rgba(97,95,255,0.9)', borderRadius: 2 }} />
+        </div>
+      </div>
+    </div>
+  )
+
+  if (id === 'poll') return (
+    <div style={s}>
+      <div style={{ width: 56, display: 'flex', flexDirection: 'column', gap: 4 }}>
+        {[{ w: 70, c: '#615fff' }, { w: 45, c: 'rgba(255,255,255,0.3)' }, { w: 25, c: 'rgba(255,255,255,0.3)' }].map((bar, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+            <div style={{ flex: 1, height: 5, background: 'rgba(255,255,255,0.08)', borderRadius: 3, overflow: 'hidden' }}>
+              <div style={{ width: `${bar.w}%`, height: '100%', background: bar.c, borderRadius: 3 }} />
+            </div>
+            <span style={{ fontSize: 5, color: 'rgba(255,255,255,0.4)', width: 14, textAlign: 'right' }}>{bar.w}%</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+
+  if (id === 'external') return (
+    <div style={s}>
+      <div style={{ width: 54, height: 34, background: 'rgba(255,255,255,0.06)', borderRadius: 4, border: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: 0, height: 0, borderTop: '7px solid transparent', borderBottom: '7px solid transparent', borderLeft: '12px solid rgba(255,255,255,0.6)', marginLeft: 3 }} />
+      </div>
+    </div>
+  )
+
+  if (id === 'waiting-room') return (
+    <div style={{ ...s, background: 'linear-gradient(135deg, #1a1b2e 0%, #0f0f1a 100%)' }}>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ width: 16, height: 16, borderRadius: '50%', background: 'rgba(97,95,255,0.3)', border: '1.5px solid rgba(97,95,255,0.6)', margin: '0 auto 4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#615fff' }} />
+        </div>
+        <div style={{ height: 3, width: 36, background: 'rgba(255,255,255,0.4)', borderRadius: 2, margin: '0 auto 2px' }} />
+        <div style={{ height: 2, width: 24, background: 'rgba(255,255,255,0.2)', borderRadius: 2, margin: '0 auto' }} />
+      </div>
+    </div>
+  )
+
+  if (id === 'social-feed') return (
+    <div style={s}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 3, width: 62 }}>
+        {[{ bg: '#1da1f2', w: 55 }, { bg: '#e1306c', w: 40 }].map((item, i) => (
+          <div key={i} style={{ background: 'rgba(255,255,255,0.06)', borderRadius: 3, padding: '3px 5px', display: 'flex', alignItems: 'center', gap: 3 }}>
+            <div style={{ width: 8, height: 8, borderRadius: '50%', background: item.bg, flexShrink: 0 }} />
+            <div style={{ flex: 1 }}>
+              <div style={{ height: 2, background: 'rgba(255,255,255,0.5)', borderRadius: 1, marginBottom: 2, width: `${item.w}%` }} />
+              <div style={{ height: 2, background: 'rgba(255,255,255,0.2)', borderRadius: 1, width: '80%' }} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+
+  if (id === 'lower-third') return (
+    <div style={s}>
+      <div style={{ position: 'absolute', bottom: 7, left: 4, right: 4 }}>
+        <div style={{ background: '#615fff', padding: '3px 6px 2px' }}>
+          <div style={{ height: 4, width: 44, background: 'rgba(255,255,255,0.9)', borderRadius: 1 }} />
+        </div>
+        <div style={{ background: 'rgba(20,21,24,0.9)', padding: '2px 6px 3px', borderLeft: '2px solid #ffa726' }}>
+          <div style={{ height: 3, width: 32, background: 'rgba(255,255,255,0.4)', borderRadius: 1 }} />
+        </div>
+      </div>
+    </div>
+  )
+
+  if (id === 'scoreboard') return (
+    <div style={s}>
+      <div style={{ width: 64, background: 'rgba(20,21,24,0.9)', borderRadius: 4, overflow: 'hidden' }}>
+        <div style={{ background: '#615fff', padding: '2px 6px', display: 'flex', justifyContent: 'space-between' }}>
+          <span style={{ fontSize: 5, fontWeight: 700, color: 'white', letterSpacing: '0.06em' }}>LIVE</span>
+          <span style={{ fontSize: 5, fontWeight: 700, color: 'white' }}>Q1</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 8px' }}>
+          <span style={{ fontSize: 13, fontWeight: 800, color: '#fff' }}>24</span>
+          <span style={{ fontSize: 6, color: '#ffa726', fontWeight: 700 }}>VS</span>
+          <span style={{ fontSize: 13, fontWeight: 800, color: '#fff' }}>17</span>
+        </div>
+      </div>
+    </div>
+  )
+
+  if (id === 'sponsor-banner') return (
+    <div style={s}>
+      <div style={{ width: 66, background: 'rgba(255,255,255,0.05)', borderRadius: 3, border: '1px solid rgba(255,255,255,0.1)', padding: '5px 8px', display: 'flex', alignItems: 'center', justifyContent: 'space-around', gap: 4 }}>
+        {['#615fff','#ffa726','#10b981'].map((c, i) => (
+          <div key={i} style={{ width: 14, height: 10, borderRadius: 2, background: c, opacity: 0.7 }} />
+        ))}
+      </div>
+    </div>
+  )
+
+  return <div style={s}><div style={{ width: 20, height: 20, borderRadius: 4, background: 'rgba(255,255,255,0.08)' }} /></div>
+}
+
 // ─── BadgeChip ────────────────────────────────────────────────────────────────
 
 function BadgeChip({ type }: { type: Badge }) {
@@ -323,7 +503,7 @@ function BadgeChip({ type }: { type: Badge }) {
 function SectionCard({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="rounded-[12px] overflow-hidden"
+      className="rounded-[12px]"
       style={{ border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.02)' }}
     >
       {children}
@@ -558,7 +738,7 @@ function GraphicRow({ graphic, enabled, onToggle, isLast, children, permissions,
       onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
     >
       {/* Main row */}
-      <div className="flex items-center gap-[12px] px-[20px] py-[14px]">
+      <div className="flex items-center gap-[12px] px-[20px] py-[10px]">
         {/* Name + description */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-[8px] mb-[2px]">
@@ -569,6 +749,8 @@ function GraphicRow({ graphic, enabled, onToggle, isLast, children, permissions,
             {description}
           </p>
         </div>
+        {/* Graphic mini preview */}
+        <GraphicMiniPreview id={graphic.id} enabled={enabled} />
         {/* Role permissions button */}
         <button
           onClick={() => setShowPerms(v => !v)}
@@ -584,9 +766,30 @@ function GraphicRow({ graphic, enabled, onToggle, isLast, children, permissions,
           <RolesIcon />
           Roles
         </button>
-        {/* Toggle */}
-        <div className="flex items-center shrink-0">
+        {/* Toggle with tooltip */}
+        <div className="relative flex items-center shrink-0 group/toggle">
           <Toggle on={enabled} onChange={onToggle} />
+          <div
+            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-[6px] px-[7px] py-[3px] rounded-[5px] whitespace-nowrap pointer-events-none opacity-0 group-hover/toggle:opacity-100 transition-opacity duration-150"
+            style={{
+              background: '#2a2b30',
+              border: '1px solid rgba(255,255,255,0.09)',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+            }}
+          >
+            <span className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
+              {enabled ? 'Visible' : 'Hidden'}
+            </span>
+            <div
+              className="absolute top-full left-1/2 -translate-x-1/2"
+              style={{
+                width: 0, height: 0,
+                borderLeft: '4px solid transparent',
+                borderRight: '4px solid transparent',
+                borderTop: '4px solid #2a2b30',
+              }}
+            />
+          </div>
         </div>
       </div>
 
@@ -603,6 +806,283 @@ function GraphicRow({ graphic, enabled, onToggle, isLast, children, permissions,
           {children}
         </div>
       )}
+    </div>
+  )
+}
+
+// ─── Graphic card preview (full-width) ───────────────────────────────────────
+
+function GraphicCardPreview({ id, enabled }: { id: string; enabled: boolean }) {
+  const base: React.CSSProperties = {
+    width: '100%', height: '100%', position: 'absolute', inset: 0,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    opacity: enabled ? 1 : 0.35, transition: 'opacity 0.2s',
+  }
+
+  if (id === 'nametag') return (
+    <div style={base}>
+      <div style={{ width: '78%', background: 'white', borderRadius: 8, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}>
+        <div style={{ height: 4, background: '#615fff' }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px' }}>
+          <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#2a2b2e', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <span style={{ fontSize: 10, fontWeight: 700, color: '#ffa726' }}>JS</span>
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ height: 5, background: '#1a1a1a', borderRadius: 2, marginBottom: 4, width: '70%' }} />
+            <div style={{ height: 4, background: '#bbb', borderRadius: 2, marginBottom: 3, width: '55%' }} />
+            <div style={{ height: 4, background: '#615fff', borderRadius: 2, width: '45%' }} />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+
+  if (id === 'logo') return (
+    <div style={base}>
+      <div style={{ width: 48, height: 48, borderRadius: 10, background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <span style={{ fontSize: 22, fontWeight: 800, color: '#fafaf9' }}>B</span>
+      </div>
+    </div>
+  )
+
+  if (id === 'ticker') return (
+    <div style={{ ...base, flexDirection: 'column', justifyContent: 'flex-end', padding: '0 0 12px' }}>
+      <div style={{ width: '88%', background: '#615fff', borderRadius: 4, padding: '5px 10px', display: 'flex', alignItems: 'center', gap: 8 }}>
+        <span style={{ fontSize: 8, fontWeight: 800, color: 'white', letterSpacing: '0.06em', flexShrink: 0 }}>LIVE</span>
+        <div style={{ width: 1, height: 12, background: 'rgba(255,255,255,0.35)' }} />
+        <div style={{ flex: 1, height: 4, background: 'rgba(255,255,255,0.65)', borderRadius: 2 }} />
+      </div>
+    </div>
+  )
+
+  if (id === 'timer') return (
+    <div style={base}>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ fontSize: 32, fontWeight: 800, color: '#fafaf9', lineHeight: 1, fontVariantNumeric: 'tabular-nums' }}>00:30</div>
+        <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.35)', marginTop: 4, letterSpacing: '0.12em' }}>COUNTDOWN</div>
+      </div>
+    </div>
+  )
+
+  if (id === 'agenda') return (
+    <div style={base}>
+      <div style={{ width: '80%', display: 'flex', flexDirection: 'column', gap: 7 }}>
+        {[{ w: '80%', active: true }, { w: '65%', active: false }, { w: '50%', active: false }].map((item, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ width: 7, height: 7, borderRadius: '50%', background: item.active ? '#615fff' : 'rgba(255,255,255,0.2)', flexShrink: 0 }} />
+            <div style={{ height: 4, background: item.active ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.2)', borderRadius: 2, width: item.w }} />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+
+  if (id === 'qa') return (
+    <div style={base}>
+      <div style={{ width: '80%', display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div style={{ background: 'rgba(255,255,255,0.08)', borderRadius: '8px 8px 8px 2px', padding: '7px 10px' }}>
+          <div style={{ height: 4, width: '75%', background: 'rgba(255,255,255,0.45)', borderRadius: 2 }} />
+        </div>
+        <div style={{ background: 'rgba(97,95,255,0.3)', borderRadius: '8px 8px 2px 8px', padding: '7px 10px', alignSelf: 'flex-end', width: '60%' }}>
+          <div style={{ height: 4, background: 'rgba(97,95,255,0.9)', borderRadius: 2 }} />
+        </div>
+      </div>
+    </div>
+  )
+
+  if (id === 'poll') return (
+    <div style={base}>
+      <div style={{ width: '82%', display: 'flex', flexDirection: 'column', gap: 6 }}>
+        {[{ w: '70%', c: '#615fff', label: '70%' }, { w: '45%', c: 'rgba(255,255,255,0.25)', label: '45%' }, { w: '25%', c: 'rgba(255,255,255,0.15)', label: '25%' }].map((bar, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div style={{ flex: 1, height: 7, background: 'rgba(255,255,255,0.07)', borderRadius: 4, overflow: 'hidden' }}>
+              <div style={{ width: bar.w, height: '100%', background: bar.c, borderRadius: 4 }} />
+            </div>
+            <span style={{ fontSize: 8, color: 'rgba(255,255,255,0.4)', width: 20, textAlign: 'right', flexShrink: 0 }}>{bar.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+
+  if (id === 'external') return (
+    <div style={base}>
+      <div style={{ width: '80%', height: '70%', background: 'rgba(255,255,255,0.05)', borderRadius: 6, border: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: 0, height: 0, borderTop: '12px solid transparent', borderBottom: '12px solid transparent', borderLeft: '20px solid rgba(255,255,255,0.55)', marginLeft: 4 }} />
+      </div>
+    </div>
+  )
+
+  if (id === 'waiting-room') return (
+    <div style={{ ...base, background: 'linear-gradient(135deg, #1a1b2e 0%, #0f0f1a 100%)' }}>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'rgba(97,95,255,0.3)', border: '2px solid rgba(97,95,255,0.6)', margin: '0 auto 8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#615fff' }} />
+        </div>
+        <div style={{ height: 4, width: 60, background: 'rgba(255,255,255,0.4)', borderRadius: 2, margin: '0 auto 4px' }} />
+        <div style={{ height: 3, width: 40, background: 'rgba(255,255,255,0.2)', borderRadius: 2, margin: '0 auto' }} />
+      </div>
+    </div>
+  )
+
+  if (id === 'social-feed') return (
+    <div style={base}>
+      <div style={{ width: '85%', display: 'flex', flexDirection: 'column', gap: 5 }}>
+        {[{ bg: '#1da1f2', lines: ['75%', '55%'] }, { bg: '#e1306c', lines: ['60%', '80%'] }].map((item, i) => (
+          <div key={i} style={{ background: 'rgba(255,255,255,0.06)', borderRadius: 5, padding: '6px 8px', display: 'flex', alignItems: 'center', gap: 7 }}>
+            <div style={{ width: 14, height: 14, borderRadius: '50%', background: item.bg, flexShrink: 0 }} />
+            <div style={{ flex: 1 }}>
+              <div style={{ height: 3, background: 'rgba(255,255,255,0.5)', borderRadius: 2, marginBottom: 3, width: item.lines[0] }} />
+              <div style={{ height: 3, background: 'rgba(255,255,255,0.2)', borderRadius: 2, width: item.lines[1] }} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+
+  if (id === 'lower-third') return (
+    <div style={{ ...base, flexDirection: 'column', justifyContent: 'flex-end', padding: '0 0 12px' }}>
+      <div style={{ width: '88%' }}>
+        <div style={{ background: '#615fff', padding: '5px 10px' }}>
+          <div style={{ height: 5, width: '55%', background: 'rgba(255,255,255,0.9)', borderRadius: 2 }} />
+        </div>
+        <div style={{ background: 'rgba(20,21,24,0.92)', padding: '4px 10px', borderLeft: '3px solid #ffa726' }}>
+          <div style={{ height: 4, width: '45%', background: 'rgba(255,255,255,0.4)', borderRadius: 2 }} />
+        </div>
+      </div>
+    </div>
+  )
+
+  if (id === 'scoreboard') return (
+    <div style={base}>
+      <div style={{ width: '80%', background: 'rgba(20,21,24,0.95)', borderRadius: 8, overflow: 'hidden' }}>
+        <div style={{ background: '#615fff', padding: '4px 12px', display: 'flex', justifyContent: 'space-between' }}>
+          <span style={{ fontSize: 8, fontWeight: 700, color: 'white', letterSpacing: '0.06em' }}>LIVE</span>
+          <span style={{ fontSize: 8, fontWeight: 700, color: 'white' }}>Q1 · 12:34</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 20px' }}>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.4)', marginBottom: 3, fontWeight: 600, letterSpacing: '0.05em' }}>HOME</div>
+            <div style={{ fontSize: 28, fontWeight: 800, color: '#fff', lineHeight: 1 }}>24</div>
+          </div>
+          <span style={{ fontSize: 12, color: '#ffa726', fontWeight: 700 }}>VS</span>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.4)', marginBottom: 3, fontWeight: 600, letterSpacing: '0.05em' }}>AWAY</div>
+            <div style={{ fontSize: 28, fontWeight: 800, color: '#fff', lineHeight: 1 }}>17</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+
+  if (id === 'sponsor-banner') return (
+    <div style={base}>
+      <div style={{ width: '85%', background: 'rgba(255,255,255,0.04)', borderRadius: 6, border: '1px solid rgba(255,255,255,0.09)', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-around', gap: 8 }}>
+        {['#615fff', '#ffa726', '#10b981'].map((c, i) => (
+          <div key={i} style={{ flex: 1, height: 16, borderRadius: 4, background: c, opacity: 0.7 }} />
+        ))}
+      </div>
+    </div>
+  )
+
+  return <div style={base}><div style={{ width: 32, height: 32, borderRadius: 6, background: 'rgba(255,255,255,0.07)' }} /></div>
+}
+
+// ─── Graphic card (card view) ─────────────────────────────────────────────────
+
+function GraphicCard({ graphic, enabled, onToggle, permissions, onPermissionChange }: Omit<GraphicRowProps, 'isLast' | 'children'>) {
+  const [showPerms, setShowPerms] = useState(false)
+  const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 })
+  const rolesRef = useRef<HTMLButtonElement>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  const { name, description, badge } = graphic
+
+  const handleRolesClick = () => {
+    if (!showPerms && rolesRef.current) {
+      const rect = rolesRef.current.getBoundingClientRect()
+      setDropdownPos({ top: rect.bottom + 6, left: rect.left })
+    }
+    setShowPerms(v => !v)
+  }
+
+  useEffect(() => {
+    if (!showPerms) return
+    const handler = (e: MouseEvent) => {
+      if (!rolesRef.current?.contains(e.target as Node) && !dropdownRef.current?.contains(e.target as Node)) {
+        setShowPerms(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [showPerms])
+
+  const dropdown = showPerms ? createPortal(
+    <div
+      ref={dropdownRef}
+      style={{
+        position: 'fixed',
+        top: dropdownPos.top,
+        left: dropdownPos.left,
+        zIndex: 9999,
+        width: 300,
+        background: '#1c1d21',
+        border: '1px solid rgba(255,255,255,0.09)',
+        boxShadow: '0 8px 28px rgba(0,0,0,0.55)',
+        borderRadius: 10,
+        padding: '4px',
+      }}
+    >
+      <GraphicPermissionPanel permissions={permissions} onChange={onPermissionChange} />
+    </div>,
+    document.body
+  ) : null
+
+  return (
+    <div
+      className="flex flex-col rounded-[10px]"
+      style={{ border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.02)', overflow: 'hidden' }}
+    >
+      {/* Full-width preview */}
+      <div style={{ height: 100, background: '#141518', flexShrink: 0, position: 'relative', overflow: 'hidden' }}>
+        <GraphicCardPreview id={graphic.id} enabled={enabled} />
+      </div>
+      {/* Info + controls */}
+      <div style={{ padding: '10px 12px', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 3, gap: 6 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5, minWidth: 0, flex: 1 }}>
+            <span style={{ fontSize: 12, fontWeight: 600, color: '#fafaf9', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{name}</span>
+            <BadgeChip type={badge} />
+          </div>
+          <div className="relative flex items-center shrink-0 group/toggle">
+            <Toggle on={enabled} onChange={onToggle} size="sm" />
+            <div
+              className="absolute bottom-full left-1/2 -translate-x-1/2 mb-[6px] px-[7px] py-[3px] rounded-[5px] whitespace-nowrap pointer-events-none opacity-0 group-hover/toggle:opacity-100 transition-opacity duration-150 z-20"
+              style={{ background: '#2a2b30', border: '1px solid rgba(255,255,255,0.09)', boxShadow: '0 4px 12px rgba(0,0,0,0.4)' }}
+            >
+              <span className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>{enabled ? 'Visible' : 'Hidden'}</span>
+              <div className="absolute top-full left-1/2 -translate-x-1/2" style={{ width: 0, height: 0, borderLeft: '4px solid transparent', borderRight: '4px solid transparent', borderTop: '4px solid #2a2b30' }} />
+            </div>
+          </div>
+        </div>
+        <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', lineHeight: '14px', marginBottom: 8 }}>{description}</p>
+        <button
+          ref={rolesRef}
+          onClick={handleRolesClick}
+          className="flex items-center gap-[5px] px-[7px] py-[4px] rounded-[6px] border-0 cursor-pointer text-[11px] font-medium self-start"
+          style={{
+            background: showPerms ? 'rgba(2,131,255,0.15)' : 'rgba(255,255,255,0.05)',
+            color: showPerms ? '#60a5fa' : 'rgba(255,255,255,0.4)',
+            border: `1px solid ${showPerms ? 'rgba(2,131,255,0.4)' : 'rgba(255,255,255,0.07)'}`,
+          }}
+          onMouseEnter={e => { if (!showPerms) { (e.currentTarget as HTMLButtonElement).style.color = '#fafaf9'; (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.08)' } }}
+          onMouseLeave={e => { if (!showPerms) { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.4)'; (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)' } }}
+        >
+          <RolesIcon />
+          Roles
+        </button>
+      </div>
+      {dropdown}
     </div>
   )
 }
@@ -634,8 +1114,29 @@ function ConstraintRow({ title, description, enabled, onToggle, isLast, children
                 {description}
               </p>
             </div>
-            <div className="flex items-center shrink-0 mt-[1px]">
+            <div className="relative flex items-center shrink-0 mt-[1px] group/ctoggle">
               <Toggle on={enabled} onChange={onToggle} />
+              <div
+                className="absolute bottom-full left-1/2 -translate-x-1/2 mb-[6px] px-[7px] py-[3px] rounded-[5px] whitespace-nowrap pointer-events-none opacity-0 group-hover/ctoggle:opacity-100 transition-opacity duration-150 z-20"
+                style={{
+                  background: '#2a2b30',
+                  border: '1px solid rgba(255,255,255,0.09)',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+                }}
+              >
+                <span className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                  {enabled ? 'Locked' : 'Unlocked'}
+                </span>
+                <div
+                  className="absolute top-full left-1/2 -translate-x-1/2"
+                  style={{
+                    width: 0, height: 0,
+                    borderLeft: '4px solid transparent',
+                    borderRight: '4px solid transparent',
+                    borderTop: '4px solid #2a2b30',
+                  }}
+                />
+              </div>
             </div>
           </div>
 
@@ -654,56 +1155,92 @@ function ConstraintRow({ title, description, enabled, onToggle, isLast, children
   )
 }
 
-// ─── Font Picker ──────────────────────────────────────────────────────────────
+// ─── Font Manager ─────────────────────────────────────────────────────────────
 
-const FONT_OPTIONS = [
-  { name: 'Plus Jakarta Sans', family: "'Plus Jakarta Sans', sans-serif" },
-  { name: 'Inter',             family: "'Inter', sans-serif" },
-  { name: 'DM Sans',           family: "'DM Sans', sans-serif" },
-  { name: 'Lato',              family: "'Lato', sans-serif" },
-  { name: 'Montserrat',        family: "'Montserrat', sans-serif" },
-  { name: 'Roboto',            family: "'Roboto', sans-serif" },
-  { name: 'Nunito',            family: "'Nunito', sans-serif" },
+const GOOGLE_FONTS_CATALOG = [
+  'Abril Fatface','Alegreya','Barlow','Bebas Neue','Bitter',
+  'Cabin','Cairo','Crimson Text','Dancing Script','DM Sans',
+  'Exo 2','Fira Sans','Fjalla One','Heebo','IBM Plex Sans',
+  'Inter','Josefin Sans','Karla','Lato','Libre Baskerville',
+  'Libre Franklin','Lora','Manrope','Merriweather','Montserrat',
+  'Mulish','Nunito','Open Sans','Oswald','Outfit',
+  'Playfair Display','Plus Jakarta Sans','Poppins','PT Sans',
+  'Quicksand','Raleway','Roboto','Roboto Slab','Rubik',
+  'Source Sans 3','Syne','Titillium Web','Ubuntu','Work Sans',
 ]
 
-const GOOGLE_FONTS_URL =
-  "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&family=Inter:wght@400;500&family=DM+Sans:wght@400;500&family=Lato:wght@400;700&family=Montserrat:wght@400;500&family=Roboto:wght@400;500&family=Nunito:wght@400;500&display=swap"
-
-interface FontPickerProps {
-  selected: string
-  onChange: (font: string) => void
+const _loadedFonts = new Set<string>()
+function injectGoogleFont(name: string) {
+  if (_loadedFonts.has(name)) return
+  _loadedFonts.add(name)
+  const link = document.createElement('link')
+  link.rel = 'stylesheet'
+  link.href = `https://fonts.googleapis.com/css2?family=${name.replace(/ /g, '+')}:wght@400;500;600&display=swap`
+  document.head.appendChild(link)
 }
 
-function FontPicker({ selected, onChange }: FontPickerProps) {
+interface FontManagerProps {
+  selected: string[]
+  onChange: (fonts: string[]) => void
+}
+
+function FontManager({ selected, onChange }: FontManagerProps) {
   const [open, setOpen] = useState(false)
+  const [editIdx, setEditIdx] = useState<number | null>(null) // null = adding, number = replacing
+  const [search, setSearch] = useState('')
   const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 })
-  const triggerRef = useRef<HTMLButtonElement>(null)
+  const addBtnRef = useRef<HTMLButtonElement>(null)
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([])
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const searchRef = useRef<HTMLInputElement>(null)
 
-  const selectedOption = FONT_OPTIONS.find(f => f.name === selected) ?? FONT_OPTIONS[0]
+  // In edit mode exclude all selected except the one being replaced; in add mode exclude all selected
+  const filtered = GOOGLE_FONTS_CATALOG.filter(f => {
+    const excluded = editIdx !== null
+      ? selected.filter((_, i) => i !== editIdx)
+      : selected
+    return !excluded.includes(f) && (!search.trim() || f.toLowerCase().includes(search.toLowerCase()))
+  })
 
-  const handleOpen = () => {
-    if (triggerRef.current) {
-      const rect = triggerRef.current.getBoundingClientRect()
-      setDropdownPos({ top: rect.bottom + 4, left: rect.left })
-    }
-    setOpen(v => !v)
+  useEffect(() => { filtered.slice(0, 24).forEach(injectGoogleFont) }, [search])
+  useEffect(() => { selected.forEach(injectGoogleFont) }, [selected])
+
+  const openDropdown = (anchor: HTMLElement, idx: number | null) => {
+    const rect = anchor.getBoundingClientRect()
+    setDropdownPos({ top: rect.bottom + 6, left: rect.left })
+    setEditIdx(idx)
+    setOpen(true)
+    setSearch('')
+    setTimeout(() => searchRef.current?.focus(), 50)
   }
+
+  const closeDropdown = () => { setOpen(false); setEditIdx(null); setSearch('') }
 
   useEffect(() => {
     if (!open) return
     const handler = (e: MouseEvent) => {
       const target = e.target as Node
-      if (
-        !triggerRef.current?.contains(target) &&
-        !dropdownRef.current?.contains(target)
-      ) {
-        setOpen(false)
+      const isCard = cardRefs.current.some(r => r?.contains(target))
+      if (!isCard && !addBtnRef.current?.contains(target) && !dropdownRef.current?.contains(target)) {
+        closeDropdown()
       }
     }
     document.addEventListener('mousedown', handler)
     return () => document.removeEventListener('mousedown', handler)
   }, [open])
+
+  const selectFont = (name: string) => {
+    if (editIdx !== null) {
+      const next = [...selected]
+      next[editIdx] = name
+      onChange(next)
+    } else {
+      onChange([...selected, name])
+    }
+    closeDropdown()
+  }
+
+  const isEditing = editIdx !== null
 
   const dropdown = open
     ? createPortal(
@@ -714,54 +1251,78 @@ function FontPicker({ selected, onChange }: FontPickerProps) {
             top: dropdownPos.top,
             left: dropdownPos.left,
             zIndex: 9999,
+            width: 264,
             background: '#1c1d21',
             border: '1px solid rgba(255,255,255,0.09)',
             boxShadow: '0 8px 28px rgba(0,0,0,0.55)',
             borderRadius: 10,
-            minWidth: 220,
           }}
         >
-          <div className="p-[4px] flex flex-col gap-[1px]">
-            {FONT_OPTIONS.map(font => {
-              const isActive = font.name === selected
+          {/* Header */}
+          <div style={{ padding: '8px 12px 4px', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+            <p style={{ fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', letterSpacing: '0.08em', margin: 0 }}>
+              {isEditing ? 'Replace font' : 'Add font'}
+            </p>
+          </div>
+          {/* Search bar */}
+          <div style={{ padding: '8px 8px 4px' }}>
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 7,
+              background: 'rgba(255,255,255,0.05)', borderRadius: 7,
+              padding: '6px 10px', border: '1px solid rgba(255,255,255,0.08)',
+            }}>
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ color: 'rgba(255,255,255,0.3)', flexShrink: 0 }}>
+                <circle cx="5" cy="5" r="3.5" stroke="currentColor" strokeWidth="1.3" />
+                <path d="M8 8L10.5 10.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+              </svg>
+              <input
+                ref={searchRef}
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder="Search Google Fonts…"
+                style={{ background: 'transparent', border: 'none', outline: 'none', color: '#fafaf9', fontSize: 12, width: '100%' }}
+              />
+              {search && (
+                <button onClick={() => setSearch('')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: 'rgba(255,255,255,0.3)', flexShrink: 0 }}>
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                    <path d="M1 1L9 9M9 1L1 9" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+                  </svg>
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Font list */}
+          <div style={{ maxHeight: 228, overflowY: 'auto', padding: '4px' }}>
+            {filtered.length === 0 ? (
+              <div style={{ padding: '20px 12px', textAlign: 'center', color: 'rgba(255,255,255,0.3)', fontSize: 12 }}>
+                No fonts found{search ? ` for "${search}"` : ''}
+              </div>
+            ) : filtered.map(name => {
+              const isCurrent = editIdx !== null && selected[editIdx] === name
               return (
                 <button
-                  key={font.name}
-                  onClick={() => { onChange(font.name); setOpen(false) }}
+                  key={name}
+                  onClick={() => selectFont(name)}
                   className="flex items-center gap-[10px] w-full px-[10px] py-[8px] rounded-[7px] cursor-pointer border-0 text-left"
-                  style={{
-                    background: isActive ? 'rgba(255,255,255,0.07)' : 'transparent',
-                    transition: 'background 0.1s',
-                  }}
-                  onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.04)' }}
-                  onMouseLeave={e => { if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = 'transparent' }}
+                  style={{ background: isCurrent ? 'rgba(255,255,255,0.07)' : 'transparent', transition: 'background 0.1s' }}
+                  onMouseEnter={e => { if (!isCurrent) (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)' }}
+                  onMouseLeave={e => { if (!isCurrent) (e.currentTarget as HTMLButtonElement).style.background = 'transparent' }}
                 >
-                  <span
-                    className="text-[15px] font-semibold w-[28px] text-center shrink-0"
-                    style={{
-                      fontFamily: font.family,
-                      color: isActive ? '#fafaf9' : 'rgba(255,255,255,0.5)',
-                    }}
-                  >
-                    Aa
-                  </span>
-                  <span
-                    className="flex-1 text-[12px] font-medium leading-[15px]"
-                    style={{
-                      fontFamily: font.family,
-                      color: isActive ? '#fafaf9' : 'rgba(255,255,255,0.65)',
-                    }}
-                  >
-                    {font.name}
-                  </span>
-                  {isActive && (
-                    <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-                      <path d="M2 6.5L5 9.5L11 3.5" stroke="#0283ff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  )}
+                  <span style={{ fontFamily: `'${name}', sans-serif`, fontSize: 15, fontWeight: 600, color: isCurrent ? '#fafaf9' : 'rgba(255,255,255,0.7)', width: 28, textAlign: 'center', flexShrink: 0 }}>Aa</span>
+                  <span style={{ fontFamily: `'${name}', sans-serif`, fontSize: 12, fontWeight: 500, color: isCurrent ? '#fafaf9' : 'rgba(255,255,255,0.65)', flex: 1 }}>{name}</span>
+                  {isCurrent
+                    ? <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5L5 9.5L11 3.5" stroke="#0283ff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                    : <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{ color: 'rgba(255,255,255,0.2)', flexShrink: 0 }}><path d="M5 1V9M1 5H9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" /></svg>
+                  }
                 </button>
               )
             })}
+          </div>
+
+          {/* Footer */}
+          <div style={{ padding: '6px 12px 8px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+            <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', margin: 0 }}>Powered by Google Fonts</p>
           </div>
         </div>,
         document.body
@@ -769,58 +1330,71 @@ function FontPicker({ selected, onChange }: FontPickerProps) {
     : null
 
   return (
-    <>
-      {/* Inject Google Fonts once */}
-      <style>{`@import url('${GOOGLE_FONTS_URL}');`}</style>
-
-      <div className="flex items-start gap-[14px]">
-        {/* Trigger button */}
-        <button
-          ref={triggerRef}
-          onClick={handleOpen}
-          className="flex items-center gap-[10px] px-[12px] py-[8px] rounded-[8px] cursor-pointer border-0 text-left shrink-0"
-          style={{
-            background: open ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.04)',
-            border: `1px solid ${open ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.07)'}`,
-            transition: 'background 0.15s, border-color 0.15s',
-          }}
-          onMouseEnter={e => { if (!open) (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.06)' }}
-          onMouseLeave={e => { if (!open) (e.currentTarget as HTMLButtonElement).style.background = open ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.04)' }}
-        >
-          <span
-            className="text-[15px] font-semibold text-[#fafaf9] w-[24px] text-center shrink-0"
-            style={{ fontFamily: selectedOption.family }}
-          >
-            Aa
-          </span>
-          <div>
-            <p
-              className="text-[12px] font-medium text-[#fafaf9] leading-[15px]"
-              style={{ fontFamily: selectedOption.family }}
-            >
-              {selectedOption.name}
-            </p>
-            <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.35)' }}>
-              Organization default
-            </p>
-          </div>
-          <svg
-            width="12" height="12" viewBox="0 0 12 12" fill="none"
+    <div className="flex flex-wrap gap-[8px] items-center">
+      {selected.map((name, idx) => {
+        const isActiveEdit = open && editIdx === idx
+        return (
+          <div
+            key={name}
+            ref={el => { cardRefs.current[idx] = el }}
+            onClick={() => openDropdown(cardRefs.current[idx]!, idx)}
+            className="flex items-center gap-[10px] px-[12px] py-[8px] rounded-[8px] group/font cursor-pointer"
             style={{
-              color: 'rgba(255,255,255,0.4)',
-              marginLeft: 4,
-              transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
-              transition: 'transform 0.15s',
+              background: isActiveEdit ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.04)',
+              border: `1px solid ${isActiveEdit ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.07)'}`,
+              position: 'relative',
+              transition: 'background 0.15s, border-color 0.15s',
             }}
+            onMouseEnter={e => { if (!isActiveEdit) { (e.currentTarget as HTMLDivElement).style.background = 'rgba(255,255,255,0.07)'; (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(255,255,255,0.12)' } }}
+            onMouseLeave={e => { if (!isActiveEdit) { (e.currentTarget as HTMLDivElement).style.background = 'rgba(255,255,255,0.04)'; (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(255,255,255,0.07)' } }}
           >
-            <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
+            <span style={{ fontFamily: `'${name}', sans-serif`, fontSize: 15, fontWeight: 600, color: '#fafaf9', width: 24, textAlign: 'center', flexShrink: 0 }}>Aa</span>
+            <div>
+              <p style={{ fontFamily: `'${name}', sans-serif`, fontSize: 12, fontWeight: 500, color: '#fafaf9', lineHeight: '15px', margin: 0 }}>{name}</p>
+              {idx === 0 && <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', margin: '2px 0 0' }}>Organization default</p>}
+            </div>
+            {/* Edit pencil hint */}
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"
+              className="opacity-0 group-hover/font:opacity-40 transition-opacity ml-[2px] shrink-0"
+              style={{ color: '#fafaf9' }}
+            >
+              <path d="M1.5 7.5L5.5 3.5L7 5L3 9H1.5V7.5Z" stroke="currentColor" strokeWidth="1.1" strokeLinejoin="round" />
+              <path d="M6 2.5L7.5 4" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" />
+            </svg>
+            {/* Remove button */}
+            <button
+              onClick={e => { e.stopPropagation(); onChange(selected.filter((_, i) => i !== idx)) }}
+              className="opacity-0 group-hover/font:opacity-100 transition-opacity absolute -top-[5px] -right-[5px] flex items-center justify-center rounded-full cursor-pointer border-0"
+              style={{ width: 14, height: 14, background: '#1a1b1e', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.6)' }}
+            >
+              <svg width="6" height="6" viewBox="0 0 7 7" fill="none">
+                <path d="M1 1L6 6M6 1L1 6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+              </svg>
+            </button>
+          </div>
+        )
+      })}
 
-      </div>
+      {/* Add font button */}
+      <button
+        ref={addBtnRef}
+        onClick={() => openDropdown(addBtnRef.current!, null)}
+        className="flex items-center gap-[6px] px-[12px] py-[8px] rounded-[8px] cursor-pointer border-0 text-[11px] font-medium"
+        style={{
+          background: (open && editIdx === null) ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.03)',
+          border: '1px dashed rgba(255,255,255,0.12)',
+          color: 'rgba(255,255,255,0.4)',
+          transition: 'background 0.15s, color 0.15s',
+        }}
+        onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.06)'; (e.currentTarget as HTMLButtonElement).style.color = '#fafaf9' }}
+        onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = (open && editIdx === null) ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.03)'; (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.4)' }}
+      >
+        <PlusSmIcon />
+        Add font
+      </button>
 
       {dropdown}
-    </>
+    </div>
   )
 }
 
@@ -828,6 +1402,13 @@ function FontPicker({ selected, onChange }: FontPickerProps) {
 
 function AddColorButton({ onAdd }: { onAdd: (color: string) => void }) {
   const inputRef = useRef<HTMLInputElement>(null)
+  useEffect(() => {
+    const input = inputRef.current
+    if (!input) return
+    const handleChange = () => onAdd(input.value)
+    input.addEventListener('change', handleChange)
+    return () => input.removeEventListener('change', handleChange)
+  }, [onAdd])
   return (
     <div className="relative">
       <input
@@ -835,7 +1416,6 @@ function AddColorButton({ onAdd }: { onAdd: (color: string) => void }) {
         type="color"
         defaultValue="#888888"
         className="sr-only"
-        onBlur={e => onAdd(e.target.value)}
       />
       <button
         onClick={() => inputRef.current?.click()}
@@ -860,74 +1440,114 @@ function AddColorButton({ onAdd }: { onAdd: (color: string) => void }) {
   )
 }
 
-interface ColorPaletteEditorProps {
-  palettes: ColorPalette[]
-  onChange: (palettes: ColorPalette[]) => void
+// ─── Swatch row helper (shared across theme palette slots) ───────────────────
+
+function SwatchRow({
+  colors, onEdit, onRemove, onAdd,
+}: {
+  colors: string[]
+  onEdit: (i: number, color: string) => void
+  onRemove: (i: number) => void
+  onAdd: (color: string) => void
+}) {
+  return (
+    <div className="flex items-center flex-wrap gap-[8px]">
+      {colors.map((color, i) => (
+        <div key={i} className="relative group/swatch">
+          <label className="block cursor-pointer">
+            <input type="color" value={color} onChange={e => onEdit(i, e.target.value)} className="sr-only" />
+            <div
+              className="w-[28px] h-[28px] rounded-[7px] transition-transform group-hover/swatch:scale-110"
+              style={{ background: color, border: '2px solid rgba(255,255,255,0.15)' }}
+            />
+          </label>
+          <button
+            onClick={() => onRemove(i)}
+            className="absolute -top-[4px] -right-[4px] w-[13px] h-[13px] rounded-full bg-[#1a1b1e] border border-[rgba(255,255,255,0.15)] items-center justify-center cursor-pointer hidden group-hover/swatch:flex z-10"
+            style={{ color: 'rgba(255,255,255,0.6)' }}
+          >
+            <svg width="6" height="6" viewBox="0 0 7 7" fill="none">
+              <path d="M1 1L6 6M6 1L1 6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+            </svg>
+          </button>
+          <div
+            className="absolute bottom-[34px] left-1/2 -translate-x-1/2 hidden group-hover/swatch:block pointer-events-none px-[7px] py-[3px] rounded-[5px] whitespace-nowrap z-10"
+            style={{ background: '#2a2b2e', border: '1px solid rgba(255,255,255,0.08)' }}
+          >
+            <span className="text-[10px] font-semibold text-[#fafaf9] uppercase tracking-wide">{color}</span>
+          </div>
+        </div>
+      ))}
+      {colors.length < 6 && <AddColorButton onAdd={onAdd} />}
+    </div>
+  )
 }
 
-function ColorPaletteEditor({ palettes, onChange }: ColorPaletteEditorProps) {
-  const updateName = (id: string, name: string) =>
-    onChange(palettes.map(p => (p.id === id ? { ...p, name } : p)))
+// ─── Color Theme Editor ───────────────────────────────────────────────────────
 
-  const editColor = (id: string, i: number, color: string) =>
-    onChange(
-      palettes.map(p =>
-        p.id === id ? { ...p, colors: p.colors.map((c, ci) => (ci === i ? color : c)) } : p
-      )
-    )
+interface ColorThemeEditorProps {
+  themes: ColorTheme[]
+  onChange: (themes: ColorTheme[]) => void
+}
 
-  const removeColor = (id: string, i: number) =>
-    onChange(
-      palettes.map(p =>
-        p.id === id ? { ...p, colors: p.colors.filter((_, ci) => ci !== i) } : p
-      )
-    )
+const PALETTE_SLOTS = [
+  { key: 'primary'   as const, label: 'Primary Colors'   },
+  { key: 'secondary' as const, label: 'Secondary Colors' },
+  { key: 'font'      as const, label: 'Font Colors'      },
+]
 
-  const addColor = (id: string, color: string) =>
-    onChange(
-      palettes.map(p =>
-        p.id === id && p.colors.length < 6 ? { ...p, colors: [...p.colors, color] } : p
-      )
-    )
+function ColorThemeEditor({ themes, onChange }: ColorThemeEditorProps) {
+  const updateThemeName = (id: string, name: string) =>
+    onChange(themes.map(t => (t.id === id ? { ...t, name } : t)))
 
-  const removePalette = (id: string) =>
-    onChange(palettes.filter(p => p.id !== id))
+  const editColor = (id: string, slot: 'primary' | 'secondary' | 'font', i: number, color: string) =>
+    onChange(themes.map(t => t.id === id ? { ...t, [slot]: t[slot].map((c, ci) => ci === i ? color : c) } : t))
 
-  const addPalette = () =>
-    onChange([...palettes, { id: `palette-${Date.now()}`, name: 'New Palette', colors: [] }])
+  const removeColor = (id: string, slot: 'primary' | 'secondary' | 'font', i: number) =>
+    onChange(themes.map(t => t.id === id ? { ...t, [slot]: t[slot].filter((_, ci) => ci !== i) } : t))
+
+  const addColor = (id: string, slot: 'primary' | 'secondary' | 'font', color: string) =>
+    onChange(themes.map(t => t.id === id && t[slot].length < 6 ? { ...t, [slot]: [...t[slot], color] } : t))
+
+  const removeTheme = (id: string) =>
+    onChange(themes.filter(t => t.id !== id))
+
+  const addTheme = () =>
+    onChange([...themes, { id: `theme-${Date.now()}`, name: 'New Theme', primary: [], secondary: [], font: [] }])
 
   return (
-    <div className="flex flex-col">
-      {palettes.map((palette, pi) => (
-        <div key={palette.id}>
-          {pi > 0 && <div className="my-[14px]" />}
-
-          {/* Palette header: editable name + remove button */}
-          <div className="flex items-center justify-between gap-[6px] mb-[10px] group/palettename">
+    <div className="flex flex-col gap-[12px]">
+      {themes.map(theme => (
+        <div
+          key={theme.id}
+          className="rounded-[10px] overflow-hidden group/theme"
+          style={{ border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.03)' }}
+        >
+          {/* Theme header */}
+          <div
+            className="flex items-center justify-between gap-[8px] px-[14px] py-[10px]"
+            style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}
+          >
             <div className="flex items-center gap-[5px] min-w-0">
               <input
-                value={palette.name}
-                onChange={e => updateName(palette.id, e.target.value)}
-                className="text-[11px] font-semibold uppercase tracking-wide bg-transparent border-0 outline-none p-0 cursor-text"
-                style={{
-                  color: 'rgba(255,255,255,0.4)',
-                  width: `${Math.max(palette.name.length * 7.5 + 4, 60)}px`,
-                }}
+                value={theme.name}
+                onChange={e => updateThemeName(theme.id, e.target.value)}
+                className="text-[12px] font-semibold bg-transparent border-0 outline-none p-0 cursor-text"
+                style={{ color: '#fafaf9', width: `${Math.max(theme.name.length * 7.8 + 4, 80)}px` }}
               />
-              <svg
-                width="9" height="9" viewBox="0 0 9 9" fill="none"
-                className="opacity-0 group-hover/palettename:opacity-100 transition-opacity shrink-0"
-                style={{ color: 'rgba(255,255,255,0.3)' }}
+              <svg width="9" height="9" viewBox="0 0 9 9" fill="none"
+                className="opacity-0 group-hover/theme:opacity-60 transition-opacity shrink-0"
+                style={{ color: 'rgba(255,255,255,0.5)' }}
               >
                 <path d="M1 6.5L5.5 2L7 3.5L2.5 8H1V6.5Z" stroke="currentColor" strokeWidth="1.1" strokeLinejoin="round" />
               </svg>
             </div>
             <button
-              onClick={() => removePalette(palette.id)}
-              className="opacity-0 group-hover/palettename:opacity-100 transition-opacity flex items-center gap-[4px] px-[6px] py-[3px] rounded-[5px] border-0 cursor-pointer text-[10px] font-medium shrink-0"
+              onClick={() => removeTheme(theme.id)}
+              className="opacity-0 group-hover/theme:opacity-100 transition-opacity flex items-center gap-[4px] px-[6px] py-[3px] rounded-[5px] border-0 cursor-pointer text-[10px] font-medium shrink-0"
               style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.35)' }}
-              onMouseEnter={e => { ;(e.currentTarget as HTMLButtonElement).style.background = 'rgba(239,68,68,0.12)'; ;(e.currentTarget as HTMLButtonElement).style.color = '#f87171' }}
-              onMouseLeave={e => { ;(e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)'; ;(e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.35)' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(239,68,68,0.12)'; (e.currentTarget as HTMLButtonElement).style.color = '#f87171' }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)'; (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.35)' }}
             >
               <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
                 <path d="M1 1L7 7M7 1L1 7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
@@ -936,74 +1556,325 @@ function ColorPaletteEditor({ palettes, onChange }: ColorPaletteEditorProps) {
             </button>
           </div>
 
-          {/* Swatches row */}
-          <div className="flex items-center flex-wrap gap-[8px]">
-            {palette.colors.map((color, i) => (
-              <div key={i} className="relative group/swatch">
-                {/* Color input inside label — clicking the swatch opens picker */}
-                <label className="block cursor-pointer">
-                  <input
-                    type="color"
-                    value={color}
-                    onChange={e => editColor(palette.id, i, e.target.value)}
-                    className="sr-only"
-                  />
-                  <div
-                    className="w-[32px] h-[32px] rounded-[8px] transition-transform group-hover/swatch:scale-110"
-                    style={{ background: color, border: '2px solid rgba(255,255,255,0.15)' }}
-                  />
-                </label>
-                {/* Remove button — outside label to avoid triggering picker */}
-                <button
-                  onClick={() => removeColor(palette.id, i)}
-                  className="absolute -top-[5px] -right-[5px] w-[14px] h-[14px] rounded-full bg-[#1a1b1e] border border-[rgba(255,255,255,0.15)] items-center justify-center cursor-pointer hidden group-hover/swatch:flex z-10"
-                  style={{ color: 'rgba(255,255,255,0.6)' }}
+          {/* Three fixed palette slots */}
+          <div className="flex flex-col">
+            {PALETTE_SLOTS.map(({ key, label }, idx) => (
+              <div key={key} className="flex items-center gap-[12px] px-[14px] py-[10px]"
+                style={idx > 0 ? { borderTop: '1px solid rgba(255,255,255,0.05)' } : undefined}>
+                <span
+                  className="text-[10px] font-semibold uppercase tracking-wide shrink-0 w-[110px]"
+                  style={{ color: 'rgba(255,255,255,0.35)' }}
                 >
-                  <svg width="7" height="7" viewBox="0 0 7 7" fill="none">
-                    <path d="M1 1L6 6M6 1L1 6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-                  </svg>
-                </button>
-                {/* Hex tooltip */}
-                <div
-                  className="absolute bottom-[38px] left-1/2 -translate-x-1/2 hidden group-hover/swatch:block pointer-events-none px-[8px] py-[4px] rounded-[5px] whitespace-nowrap z-10"
-                  style={{ background: '#2a2b2e', border: '1px solid rgba(255,255,255,0.08)' }}
-                >
-                  <span className="text-[10px] font-semibold text-[#fafaf9] uppercase tracking-wide">
-                    {color}
-                  </span>
-                </div>
+                  {label}
+                </span>
+                <SwatchRow
+                  colors={theme[key]}
+                  onEdit={(i, color) => editColor(theme.id, key, i, color)}
+                  onRemove={i => removeColor(theme.id, key, i)}
+                  onAdd={color => addColor(theme.id, key, color)}
+                />
               </div>
             ))}
-            {palette.colors.length < 6 && (
-              <AddColorButton onAdd={color => addColor(palette.id, color)} />
-            )}
           </div>
         </div>
       ))}
 
-      {/* Add new palette */}
-      <div className="mt-[14px]">
+      {/* Add theme */}
+      <button
+        onClick={addTheme}
+        className="flex items-center gap-[6px] px-[10px] py-[8px] rounded-[8px] border-0 cursor-pointer text-[11px] font-medium transition-colors"
+        style={{ background: 'rgba(255,255,255,0.04)', border: '1px dashed rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.4)' }}
+        onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.07)'; (e.currentTarget as HTMLButtonElement).style.color = '#fafaf9'; (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,255,255,0.2)' }}
+        onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.04)'; (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.4)'; (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,255,255,0.12)' }}
+      >
+        <PlusSmIcon />
+        Add theme
+      </button>
+    </div>
+  )
+}
+
+// ─── Theme preview ────────────────────────────────────────────────────────────
+
+const PREVIEW_GRAPHICS = [
+  { id: 'name-tag',     name: 'Name Tag'    },
+  { id: 'lower-third',  name: 'Lower Third' },
+  { id: 'score-board',  name: 'Score Board' },
+]
+
+function NameTagPreview({ primary, secondary }: { primary: string; secondary: string }) {
+  return (
+    <div style={{ width: 170, background: 'white', borderRadius: 12, overflow: 'hidden', boxShadow: '0 8px 24px rgba(0,0,0,0.6)' }}>
+      <div style={{ height: 5, background: primary }} />
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px' }}>
+        <div style={{ width: 38, height: 38, borderRadius: '50%', background: '#2a2b2e', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <span style={{ fontSize: 11, fontWeight: 700, color: secondary }}>JS</span>
+        </div>
+        <div>
+          <p style={{ fontSize: 13, fontWeight: 700, color: '#1a1a1a', margin: 0, lineHeight: 1.2 }}>Jeff Smith</p>
+          <p style={{ fontSize: 10, color: '#888', margin: '3px 0 0', lineHeight: 1.2 }}>Product Designer</p>
+          <p style={{ fontSize: 10, fontWeight: 600, color: primary, margin: '3px 0 0', lineHeight: 1.2 }}>Breezy Corp</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function LowerThirdPreview({ primary, secondary, font }: { primary: string; secondary: string; font: string }) {
+  return (
+    <div style={{ width: 170 }}>
+      <div style={{ background: primary, padding: '7px 12px 5px' }}>
+        <p style={{ fontSize: 13, fontWeight: 700, color: font, margin: 0, lineHeight: 1.2 }}>Jeff Smith</p>
+      </div>
+      <div style={{ background: 'rgba(20,21,24,0.92)', padding: '5px 12px 7px', borderLeft: `3px solid ${secondary}` }}>
+        <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.65)', margin: 0, lineHeight: 1.4 }}>Product Designer · Breezy Corp</p>
+      </div>
+    </div>
+  )
+}
+
+function ScoreBoardPreview({ primary, secondary, font }: { primary: string; secondary: string; font: string }) {
+  return (
+    <div style={{ width: 170, background: 'rgba(20,21,24,0.95)', borderRadius: 8, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}>
+      <div style={{ background: primary, padding: '5px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span style={{ fontSize: 9, fontWeight: 700, color: font, letterSpacing: '0.06em' }}>LIVE</span>
+        <span style={{ fontSize: 9, fontWeight: 700, color: font }}>Q1 · 12:34</span>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px' }}>
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', margin: '0 0 3px', fontWeight: 600, letterSpacing: '0.05em' }}>HOME</p>
+          <p style={{ fontSize: 24, fontWeight: 800, color: '#fff', margin: 0, lineHeight: 1 }}>24</p>
+        </div>
+        <span style={{ fontSize: 12, color: secondary, fontWeight: 700 }}>VS</span>
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', margin: '0 0 3px', fontWeight: 600, letterSpacing: '0.05em' }}>AWAY</p>
+          <p style={{ fontSize: 24, fontWeight: 800, color: '#fff', margin: 0, lineHeight: 1 }}>17</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ThemePreview({ themes }: { themes: ColorTheme[] }) {
+  const [graphicIdx, setGraphicIdx] = useState(0)
+  const [themeIdx, setThemeIdx] = useState(0)
+  const safeThemeIdx = Math.min(themeIdx, Math.max(0, themes.length - 1))
+  const theme = themes[safeThemeIdx]
+  const primary   = theme?.primary[0]   ?? '#615fff'
+  const secondary = theme?.secondary[0] ?? '#ffa726'
+  const font      = theme?.font[0]      ?? '#fafaf9'
+  const graphic   = PREVIEW_GRAPHICS[graphicIdx]
+
+  return (
+    <div
+      className="flex flex-col rounded-[10px] shrink-0"
+      style={{ width: 216, border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.02)', overflow: 'hidden' }}
+    >
+      {/* Header */}
+      <div className="px-[12px] pt-[10px] pb-[9px]" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+        <p className="text-[9px] font-bold uppercase tracking-widest mb-[7px]" style={{ color: 'rgba(255,255,255,0.3)' }}>Preview</p>
+        {/* Theme selector pills */}
+        <div className="flex flex-wrap gap-[4px]">
+          {themes.map((t, i) => {
+            const isActive = i === safeThemeIdx
+            const color = t.primary[0] ?? '#615fff'
+            return (
+              <button
+                key={t.id}
+                onClick={() => setThemeIdx(i)}
+                className="border-0 cursor-pointer px-[8px] py-[3px] rounded-full text-[10px] font-medium transition-all duration-150 whitespace-nowrap"
+                style={{
+                  background: isActive ? `${color}22` : 'rgba(255,255,255,0.05)',
+                  color: isActive ? color : 'rgba(255,255,255,0.4)',
+                  border: `1px solid ${isActive ? `${color}55` : 'rgba(255,255,255,0.08)'}`,
+                }}
+              >
+                {t.name}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Preview area */}
+      <div
+        className="flex-1 flex items-center justify-center py-[22px] px-[14px]"
+        style={{ background: '#141518', minHeight: 148 }}
+      >
+        {graphic.id === 'name-tag'    && <NameTagPreview    primary={primary} secondary={secondary} />}
+        {graphic.id === 'lower-third' && <LowerThirdPreview primary={primary} secondary={secondary} font={font} />}
+        {graphic.id === 'score-board' && <ScoreBoardPreview primary={primary} secondary={secondary} font={font} />}
+      </div>
+
+      {/* Navigation */}
+      <div className="flex items-center justify-between px-[8px] py-[8px]" style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}>
         <button
-          onClick={addPalette}
-          className="flex items-center gap-[6px] px-[10px] py-[6px] rounded-[7px] border-0 cursor-pointer text-[11px] font-medium transition-colors"
-          style={{
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px dashed rgba(255,255,255,0.12)',
-            color: 'rgba(255,255,255,0.4)',
-          }}
-          onMouseEnter={e => {
-            ;(e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.07)'
-            ;(e.currentTarget as HTMLButtonElement).style.color = '#fafaf9'
-            ;(e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,255,255,0.2)'
-          }}
-          onMouseLeave={e => {
-            ;(e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.04)'
-            ;(e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.4)'
-            ;(e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,255,255,0.12)'
-          }}
+          onClick={() => setGraphicIdx(i => (i - 1 + PREVIEW_GRAPHICS.length) % PREVIEW_GRAPHICS.length)}
+          className="flex items-center justify-center rounded-[6px] border-0 cursor-pointer"
+          style={{ width: 24, height: 24, background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.4)' }}
+          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.09)'; (e.currentTarget as HTMLButtonElement).style.color = '#fafaf9' }}
+          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)'; (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.4)' }}
         >
-          <PlusSmIcon />
-          Add palette
+          <svg width="7" height="10" viewBox="0 0 7 10" fill="none">
+            <path d="M5 1.5L2 5L5 8.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+        <span className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.45)' }}>
+          {graphic.name}
+        </span>
+        <button
+          onClick={() => setGraphicIdx(i => (i + 1) % PREVIEW_GRAPHICS.length)}
+          className="flex items-center justify-center rounded-[6px] border-0 cursor-pointer"
+          style={{ width: 24, height: 24, background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.4)' }}
+          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.09)'; (e.currentTarget as HTMLButtonElement).style.color = '#fafaf9' }}
+          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)'; (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.4)' }}
+        >
+          <svg width="7" height="10" viewBox="0 0 7 10" fill="none">
+            <path d="M2 1.5L5 5L2 8.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// ─── Font preview ─────────────────────────────────────────────────────────────
+
+function NameTagFontPreview({ fontFamily }: { fontFamily: string }) {
+  return (
+    <div style={{ width: 170, background: 'white', borderRadius: 12, overflow: 'hidden', boxShadow: '0 8px 24px rgba(0,0,0,0.6)' }}>
+      <div style={{ height: 5, background: '#615fff' }} />
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px' }}>
+        <div style={{ width: 38, height: 38, borderRadius: '50%', background: '#2a2b2e', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <span style={{ fontSize: 11, fontWeight: 700, color: '#ffa726', fontFamily }}>JS</span>
+        </div>
+        <div>
+          <p style={{ fontSize: 13, fontWeight: 700, color: '#1a1a1a', margin: 0, lineHeight: 1.2, fontFamily }}>Jeff Smith</p>
+          <p style={{ fontSize: 10, color: '#888', margin: '3px 0 0', lineHeight: 1.2, fontFamily }}>Product Designer</p>
+          <p style={{ fontSize: 10, fontWeight: 600, color: '#615fff', margin: '3px 0 0', lineHeight: 1.2, fontFamily }}>Breezy Corp</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function LowerThirdFontPreview({ fontFamily }: { fontFamily: string }) {
+  return (
+    <div style={{ width: 170 }}>
+      <div style={{ background: '#615fff', padding: '7px 12px 5px' }}>
+        <p style={{ fontSize: 13, fontWeight: 700, color: '#fafaf9', margin: 0, lineHeight: 1.2, fontFamily }}>Jeff Smith</p>
+      </div>
+      <div style={{ background: 'rgba(20,21,24,0.92)', padding: '5px 12px 7px', borderLeft: '3px solid #ffa726' }}>
+        <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.65)', margin: 0, lineHeight: 1.4, fontFamily }}>Product Designer · Breezy Corp</p>
+      </div>
+    </div>
+  )
+}
+
+function ScoreBoardFontPreview({ fontFamily }: { fontFamily: string }) {
+  return (
+    <div style={{ width: 170, background: 'rgba(20,21,24,0.95)', borderRadius: 8, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}>
+      <div style={{ background: '#615fff', padding: '5px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span style={{ fontSize: 9, fontWeight: 700, color: '#fafaf9', letterSpacing: '0.06em', fontFamily }}>LIVE</span>
+        <span style={{ fontSize: 9, fontWeight: 700, color: '#fafaf9', fontFamily }}>Q1 · 12:34</span>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px' }}>
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', margin: '0 0 3px', fontWeight: 600, letterSpacing: '0.05em', fontFamily }}>HOME</p>
+          <p style={{ fontSize: 24, fontWeight: 800, color: '#fff', margin: 0, lineHeight: 1, fontFamily }}>24</p>
+        </div>
+        <span style={{ fontSize: 12, color: '#ffa726', fontWeight: 700, fontFamily }}>VS</span>
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', margin: '0 0 3px', fontWeight: 600, letterSpacing: '0.05em', fontFamily }}>AWAY</p>
+          <p style={{ fontSize: 24, fontWeight: 800, color: '#fff', margin: 0, lineHeight: 1, fontFamily }}>17</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function FontPreview({ fonts }: { fonts: string[] }) {
+  const [graphicIdx, setGraphicIdx] = useState(0)
+  const [fontIdx, setFontIdx] = useState(0)
+  const safeFontIdx = Math.min(fontIdx, Math.max(0, fonts.length - 1))
+  const fontName   = fonts[safeFontIdx] ?? 'Plus Jakarta Sans'
+  const fontFamily = `'${fontName}', sans-serif`
+  const graphic    = PREVIEW_GRAPHICS[graphicIdx]
+
+  // Inject preview font
+  useEffect(() => { fonts.forEach(injectGoogleFont) }, [fonts])
+
+  return (
+    <div
+      className="flex flex-col rounded-[10px] shrink-0"
+      style={{ width: 216, border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.02)', overflow: 'hidden' }}
+    >
+      {/* Header */}
+      <div className="px-[12px] pt-[10px] pb-[9px]" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+        <p className="text-[9px] font-bold uppercase tracking-widest mb-[7px]" style={{ color: 'rgba(255,255,255,0.3)' }}>Preview</p>
+        {/* Font pills */}
+        <div className="flex flex-wrap gap-[4px] mb-[5px]">
+          {fonts.length === 0
+            ? <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.2)' }}>No fonts added</span>
+            : fonts.map((f, i) => {
+                const isActive = i === safeFontIdx
+                return (
+                  <button
+                    key={f}
+                    onClick={() => setFontIdx(i)}
+                    className="border-0 cursor-pointer px-[8px] py-[3px] rounded-full text-[10px] font-medium transition-all duration-150 whitespace-nowrap"
+                    style={{
+                      background: isActive ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.05)',
+                      color: isActive ? '#fafaf9' : 'rgba(255,255,255,0.4)',
+                      border: `1px solid ${isActive ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.07)'}`,
+                      fontFamily: `'${f}', sans-serif`,
+                    }}
+                  >
+                    {f}
+                  </button>
+                )
+              })
+          }
+        </div>
+      </div>
+
+      {/* Preview area */}
+      <div
+        className="flex-1 flex items-center justify-center py-[22px] px-[14px]"
+        style={{ background: '#141518', minHeight: 148 }}
+      >
+        {fonts.length === 0
+          ? <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.2)', textAlign: 'center' }}>Add a font to preview</p>
+          : graphic.id === 'name-tag'    ? <NameTagFontPreview    fontFamily={fontFamily} />
+          : graphic.id === 'lower-third' ? <LowerThirdFontPreview fontFamily={fontFamily} />
+          : <ScoreBoardFontPreview fontFamily={fontFamily} />
+        }
+      </div>
+
+      {/* Navigation */}
+      <div className="flex items-center justify-between px-[8px] py-[8px]" style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}>
+        <button
+          onClick={() => setGraphicIdx(i => (i - 1 + PREVIEW_GRAPHICS.length) % PREVIEW_GRAPHICS.length)}
+          className="flex items-center justify-center rounded-[6px] border-0 cursor-pointer"
+          style={{ width: 24, height: 24, background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.4)' }}
+          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.09)'; (e.currentTarget as HTMLButtonElement).style.color = '#fafaf9' }}
+          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)'; (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.4)' }}
+        >
+          <svg width="7" height="10" viewBox="0 0 7 10" fill="none">
+            <path d="M5 1.5L2 5L5 8.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+        <span className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.45)' }}>{graphic.name}</span>
+        <button
+          onClick={() => setGraphicIdx(i => (i + 1) % PREVIEW_GRAPHICS.length)}
+          className="flex items-center justify-center rounded-[6px] border-0 cursor-pointer"
+          style={{ width: 24, height: 24, background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.4)' }}
+          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.09)'; (e.currentTarget as HTMLButtonElement).style.color = '#fafaf9' }}
+          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)'; (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.4)' }}
+        >
+          <svg width="7" height="10" viewBox="0 0 7 10" fill="none">
+            <path d="M2 1.5L5 5L2 8.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
         </button>
       </div>
     </div>
@@ -1262,6 +2133,10 @@ export default function WorkspacePage({ section }: { section: 'graphics' | 'bran
   const [externalContentPdfName, setExternalContentPdfName] = useState<string | null>(null)
   const [waitingRoomBackground, setWaitingRoomBackground] = useState<string | null>(null)
 
+  const [graphicFilter, setGraphicFilter] = useState<'all' | 'default' | 'enterprise'>('all')
+  const [graphicSearch, setGraphicSearch] = useState('')
+  const [graphicView, setGraphicView] = useState<'list' | 'card'>('list')
+
   const [graphicPermissions, setGraphicPermissions] = useState<GraphicPermissionMap>(() =>
     Object.fromEntries(GRAPHICS.map(g => [g.id, { ...DEFAULT_ROLE_PERMISSIONS }]))
   )
@@ -1278,8 +2153,8 @@ export default function WorkspacePage({ section }: { section: 'graphics' | 'bran
     setSaved(false)
   }
 
-  const [brandPalettes, setBrandPalettes] = useState<ColorPalette[]>(BRAND_PALETTES_DEFAULT)
-  const [selectedFont, setSelectedFont] = useState('Plus Jakarta Sans')
+  const [brandThemes, setBrandThemes] = useState<ColorTheme[]>(BRAND_THEMES_DEFAULT)
+  const [selectedFonts, setSelectedFonts] = useState<string[]>(['Plus Jakarta Sans'])
   const [brandingPermissions, setBrandingPermissions] = useState<GraphicPermissionMap>({
     colorLock:      { ...DEFAULT_ROLE_PERMISSIONS },
     fontLock:       { ...DEFAULT_ROLE_PERMISSIONS },
@@ -1365,6 +2240,17 @@ export default function WorkspacePage({ section }: { section: 'graphics' | 'bran
               <span className="text-[12px] font-medium">Saved</span>
             </div>
           )}
+          {dirty && (
+            <button
+              onClick={() => setDirty(false)}
+              className="flex items-center gap-[6px] h-[36px] px-[16px] rounded-[8px] cursor-pointer border-0 font-semibold text-[13px] transition-all"
+              style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.55)' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.1)'; (e.currentTarget as HTMLButtonElement).style.color = '#fafaf9' }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.06)'; (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.55)' }}
+            >
+              Discard
+            </button>
+          )}
           <button
             onClick={dirty ? handleSave : undefined}
             className="flex items-center gap-[6px] h-[36px] px-[16px] rounded-[8px] cursor-pointer border-0 font-semibold text-[13px] transition-all"
@@ -1383,12 +2269,12 @@ export default function WorkspacePage({ section }: { section: 'graphics' | 'bran
       <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide min-h-0 px-[28px] py-[24px]">
         <div className="max-w-[860px] mx-auto flex flex-col gap-[28px]">
 
-          {/* ── Section 1: Graphic Management ── */}
+          {/* ── Section 1: Graphics Library ── */}
           <div ref={graphicsRef}>
             <div className="flex items-start justify-between mb-[14px]">
               <div>
                 <h2 className="font-semibold text-[15px] text-[#fafaf9] mb-[4px]">
-                  Graphic Management
+                  Graphics Library
                 </h2>
                 <p className="text-[13px] leading-[18px]" style={{ color: 'rgba(255,255,255,0.45)' }}>
                   Control which graphic types are available to your organization's users during meetings.
@@ -1418,20 +2304,129 @@ export default function WorkspacePage({ section }: { section: 'graphics' | 'bran
               </div>
             </div>
 
+            {/* Search + filter tabs + view toggle */}
+            <div className="flex items-center gap-[8px] mb-[12px]">
+              <div className="relative flex items-center flex-1">
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none" className="absolute left-[9px] pointer-events-none" style={{ color: 'rgba(255,255,255,0.3)' }}>
+                  <circle cx="5.5" cy="5.5" r="4" stroke="currentColor" strokeWidth="1.4" />
+                  <path d="M9 9L11.5 11.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+                </svg>
+                <input
+                  type="text"
+                  value={graphicSearch}
+                  onChange={e => setGraphicSearch(e.target.value)}
+                  placeholder="Search graphics…"
+                  className="w-full text-[12px] pl-[28px] pr-[10px] rounded-[8px] border-0 outline-none"
+                  style={{
+                    background: 'rgba(255,255,255,0.05)',
+                    color: '#fafaf9',
+                    height: 34,
+                  }}
+                />
+              </div>
+              <div className="flex gap-[2px] p-[3px] rounded-[8px] shrink-0" style={{ background: 'rgba(255,255,255,0.05)' }}>
+                {(['all', 'default', 'enterprise'] as const).map(tab => {
+                  const count = tab === 'all' ? GRAPHICS.length : GRAPHICS.filter(g => g.badge === tab).length
+                  return (
+                  <button
+                    key={tab}
+                    onClick={() => setGraphicFilter(tab)}
+                    className="flex items-center gap-[5px] text-[12px] font-medium px-[12px] py-[5px] rounded-[6px] capitalize cursor-pointer border-0 transition-all"
+                    style={graphicFilter === tab
+                      ? { background: 'rgba(255,255,255,0.1)', color: '#fafaf9' }
+                      : { background: 'transparent', color: 'rgba(255,255,255,0.45)' }}
+                  >
+                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                    <span
+                      className="text-[10px] font-semibold px-[5px] py-[1px] rounded-full"
+                      style={{
+                        background: graphicFilter === tab ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.07)',
+                        color: graphicFilter === tab ? '#fafaf9' : 'rgba(255,255,255,0.35)',
+                      }}
+                    >
+                      {count}
+                    </span>
+                  </button>
+                  )
+                })}
+              </div>
+
+              {/* View toggle */}
+              <div className="flex gap-[2px] p-[3px] rounded-[8px] shrink-0" style={{ background: 'rgba(255,255,255,0.05)' }}>
+                {(['list', 'card'] as const).map(v => (
+                  <button
+                    key={v}
+                    onClick={() => setGraphicView(v)}
+                    className="flex items-center justify-center rounded-[6px] border-0 cursor-pointer transition-all"
+                    style={{
+                      width: 28, height: 28,
+                      background: graphicView === v ? 'rgba(255,255,255,0.1)' : 'transparent',
+                      color: graphicView === v ? '#fafaf9' : 'rgba(255,255,255,0.4)',
+                    }}
+                    title={v === 'list' ? 'List view' : 'Card view'}
+                  >
+                    {v === 'list'
+                      ? <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1 3h11M1 6.5h11M1 10h11" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" /></svg>
+                      : <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1" y="1" width="4.5" height="4.5" rx="1" stroke="currentColor" strokeWidth="1.3" /><rect x="7.5" y="1" width="4.5" height="4.5" rx="1" stroke="currentColor" strokeWidth="1.3" /><rect x="1" y="7.5" width="4.5" height="4.5" rx="1" stroke="currentColor" strokeWidth="1.3" /><rect x="7.5" y="7.5" width="4.5" height="4.5" rx="1" stroke="currentColor" strokeWidth="1.3" /></svg>
+                    }
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {(() => {
+              const filtered = GRAPHICS
+                .filter(g => graphicFilter === 'all' || g.badge === graphicFilter)
+                .filter(g => !graphicSearch.trim() || g.name.toLowerCase().includes(graphicSearch.toLowerCase()))
+
+              if (filtered.length === 0) {
+                return (
+                  <div className="flex flex-col items-center justify-center py-[48px] rounded-[12px]" style={{ border: '1px solid rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.02)' }}>
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" style={{ color: 'rgba(255,255,255,0.2)' }} className="mb-[12px]">
+                      <circle cx="14" cy="14" r="9" stroke="currentColor" strokeWidth="1.8" />
+                      <path d="M21 21L28 28" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                      <path d="M11 14h6M14 11v6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
+                    <p className="text-[13px] font-medium mb-[4px]" style={{ color: 'rgba(255,255,255,0.45)' }}>No graphics found</p>
+                    <p className="text-[12px]" style={{ color: 'rgba(255,255,255,0.25)' }}>
+                      No results for <span style={{ color: 'rgba(255,255,255,0.5)' }}>"{graphicSearch}"</span>
+                    </p>
+                  </div>
+                )
+              }
+
+              if (graphicView === 'card') {
+                return (
+                  <div className="grid gap-[12px]" style={{ gridTemplateColumns: 'repeat(3, 1fr)', alignItems: 'start' }}>
+                    {filtered.map(graphic => (
+                      <GraphicCard
+                        key={graphic.id}
+                        graphic={graphic}
+                        enabled={!!graphics[graphic.id]}
+                        onToggle={() => toggleGraphic(graphic.id)}
+                        permissions={graphicPermissions[graphic.id] ?? DEFAULT_ROLE_PERMISSIONS}
+                        onPermissionChange={(role, key, value) => updateGraphicPermission(graphic.id, role, key, value)}
+                      />
+                    ))}
+                  </div>
+                )
+              }
+
+              return (
             <SectionCard>
-              {GRAPHICS.map((graphic, i) => (
+              {filtered.map((graphic, i, arr) => (
                 <GraphicRow
                   key={graphic.id}
                   graphic={graphic}
                   enabled={!!graphics[graphic.id]}
                   onToggle={() => toggleGraphic(graphic.id)}
-                  isLast={i === GRAPHICS.length - 1}
+                  isLast={i === arr.length - 1}
                   permissions={graphicPermissions[graphic.id] ?? DEFAULT_ROLE_PERMISSIONS}
                   onPermissionChange={(role, key, value) => updateGraphicPermission(graphic.id, role, key, value)}
                 >
                   {graphic.id === 'social-feed' && (
                     <div
-                      className="rounded-[8px] overflow-hidden"
+                      className="rounded-[8px]"
                       style={{ border: '1px solid rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.02)' }}
                     >
                       <p
@@ -1459,7 +2454,30 @@ export default function WorkspacePage({ section }: { section: 'graphics' | 'bran
                             >
                               {platform.name}
                             </span>
-                            <Toggle on={isOn} onChange={() => toggleSocialPlatform(platform.id)} size="sm" />
+                            <div className="relative flex items-center shrink-0 group/ptoggle">
+                              <Toggle on={isOn} onChange={() => toggleSocialPlatform(platform.id)} size="sm" />
+                              <div
+                                className="absolute bottom-full left-1/2 -translate-x-1/2 mb-[6px] px-[7px] py-[3px] rounded-[5px] whitespace-nowrap pointer-events-none opacity-0 group-hover/ptoggle:opacity-100 transition-opacity duration-150 z-20"
+                                style={{
+                                  background: '#2a2b30',
+                                  border: '1px solid rgba(255,255,255,0.09)',
+                                  boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+                                }}
+                              >
+                                <span className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                                  {isOn ? 'Visible' : 'Hidden'}
+                                </span>
+                                <div
+                                  className="absolute top-full left-1/2 -translate-x-1/2"
+                                  style={{
+                                    width: 0, height: 0,
+                                    borderLeft: '4px solid transparent',
+                                    borderRight: '4px solid transparent',
+                                    borderTop: '4px solid #2a2b30',
+                                  }}
+                                />
+                              </div>
+                            </div>
                           </div>
                         )
                       })}
@@ -1470,11 +2488,7 @@ export default function WorkspacePage({ section }: { section: 'graphics' | 'bran
                       <p className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: 'rgba(255,255,255,0.3)' }}>
                         Default Source
                       </p>
-                      {/* Source type selector */}
-                      <div
-                        className="flex gap-[2px] p-[3px] rounded-[8px]"
-                        style={{ background: 'rgba(255,255,255,0.05)' }}
-                      >
+                      <div className="flex gap-[2px] p-[3px] rounded-[8px]" style={{ background: 'rgba(255,255,255,0.05)' }}>
                         {EXTERNAL_SOURCE_TYPES.map(type => (
                           <button
                             key={type.id}
@@ -1490,7 +2504,6 @@ export default function WorkspacePage({ section }: { section: 'graphics' | 'bran
                           </button>
                         ))}
                       </div>
-                      {/* Input per type */}
                       <div style={{ display: externalContentType === 'link' ? 'block' : 'none' }}>
                         <UrlInput value={externalLinkUrl} onChange={v => { setExternalLinkUrl(v); setDirty(true) }} placeholder="https://example.com/embed" />
                       </div>
@@ -1524,6 +2537,8 @@ export default function WorkspacePage({ section }: { section: 'graphics' | 'bran
                 </GraphicRow>
               ))}
             </SectionCard>
+              )
+            })()}
           </div>
 
           {/* ── Section 2: Branding Constraints ── */}
@@ -1548,7 +2563,12 @@ export default function WorkspacePage({ section }: { section: 'graphics' | 'bran
                 onToggle={() => toggleBranding('colorLock')}
                 isLast={false}
               >
-                <ColorPaletteEditor palettes={brandPalettes} onChange={p => { setBrandPalettes(p); setDirty(true) }} />
+                <div className="flex gap-[14px] items-start">
+                  <div className="flex-1 min-w-0">
+                    <ColorThemeEditor themes={brandThemes} onChange={t => { setBrandThemes(t); setDirty(true) }} />
+                  </div>
+                  <ThemePreview themes={brandThemes} />
+                </div>
               </ConstraintRow>
 
               {/* Font Override Lock */}
@@ -1559,10 +2579,15 @@ export default function WorkspacePage({ section }: { section: 'graphics' | 'bran
                 onToggle={() => toggleBranding('fontLock')}
                 isLast={false}
               >
-                <FontPicker
-                  selected={selectedFont}
-                  onChange={f => { setSelectedFont(f); setDirty(true) }}
-                />
+                <div className="flex gap-[14px] items-start">
+                  <div className="flex-1 min-w-0">
+                    <FontManager
+                      selected={selectedFonts}
+                      onChange={f => { setSelectedFonts(f); setDirty(true) }}
+                    />
+                  </div>
+                  <FontPreview fonts={selectedFonts} />
+                </div>
               </ConstraintRow>
 
               {/* Logo Lock */}

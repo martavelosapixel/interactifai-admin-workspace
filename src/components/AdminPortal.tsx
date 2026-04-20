@@ -131,7 +131,7 @@ function AdminSidebar({ activePage, onNavigate }: AdminSidebarProps) {
               />
               <div className="flex flex-col gap-[1px] pl-[20px]">
                 {([
-                  { id: 'workspace-graphics' as Page, label: 'Graphic Management' },
+                  { id: 'workspace-graphics' as Page, label: 'Graphics Library' },
                   { id: 'workspace-branding' as Page, label: 'Branding Guidelines' },
                 ]).map(({ id, label }) => {
                   const isActive = activePage === id
