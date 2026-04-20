@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import AdminPortal from './components/AdminPortal'
 
-const PASSWORD = 'vizrt2025'
+const PASSWORD = 'interactifAIworkspace2026'
 const SESSION_KEY = 'app_unlocked'
 
 function PasswordGate({ onUnlock }: { onUnlock: () => void }) {
