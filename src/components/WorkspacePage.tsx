@@ -1276,50 +1276,53 @@ function ConstraintRow({ title, description, enabled, onToggle, isLast, children
               <p className="text-[12px] leading-[16px]" style={{ color: 'rgba(255,255,255,0.4)' }}>
                 {description}
               </p>
-              {onRequestUpdate && (
+            </div>
+            <div className="flex items-center shrink-0 mt-[1px]">
+              {onRequestUpdate ? (
                 <button
                   onClick={onRequestUpdate}
-                  className="inline-flex items-center gap-[5px] mt-[8px] px-[9px] py-[4px] rounded-[6px] border-0 cursor-pointer text-[11px] font-medium transition-colors"
+                  className="inline-flex items-center gap-[6px] px-[11px] py-[6px] rounded-[7px] border-0 cursor-pointer text-[12px] font-medium transition-colors"
                   style={{ background: 'rgba(97,95,255,0.1)', color: '#a5a3ff' }}
                   onMouseEnter={e => { e.currentTarget.style.background = 'rgba(97,95,255,0.18)'; e.currentTarget.style.color = '#c4c3ff' }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'rgba(97,95,255,0.1)'; e.currentTarget.style.color = '#a5a3ff' }}
                 >
-                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                    <path d="M5 1.5V5L7 7" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-                    <circle cx="5" cy="5" r="4" stroke="currentColor" strokeWidth="1.3" />
+                  <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                    <path d="M5.5 1.5V5.5L7.5 7.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                    <circle cx="5.5" cy="5.5" r="4.5" stroke="currentColor" strokeWidth="1.3" />
                   </svg>
                   Request Update
                 </button>
+              ) : (
+                <div className="relative group/ctoggle">
+                  <Toggle on={enabled} onChange={onToggle} />
+                  <div
+                    className="absolute bottom-full left-1/2 -translate-x-1/2 mb-[6px] px-[7px] py-[3px] rounded-[5px] whitespace-nowrap pointer-events-none opacity-0 group-hover/ctoggle:opacity-100 transition-opacity duration-150 z-20"
+                    style={{
+                      background: '#2a2b30',
+                      border: '1px solid rgba(255,255,255,0.09)',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+                    }}
+                  >
+                    <span className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                      {enabled ? 'Locked' : 'Unlocked'}
+                    </span>
+                    <div
+                      className="absolute top-full left-1/2 -translate-x-1/2"
+                      style={{
+                        width: 0, height: 0,
+                        borderLeft: '4px solid transparent',
+                        borderRight: '4px solid transparent',
+                        borderTop: '4px solid #2a2b30',
+                      }}
+                    />
+                  </div>
+                </div>
               )}
-            </div>
-            <div className="relative flex items-center shrink-0 mt-[1px] group/ctoggle">
-              <Toggle on={enabled} onChange={onToggle} />
-              <div
-                className="absolute bottom-full left-1/2 -translate-x-1/2 mb-[6px] px-[7px] py-[3px] rounded-[5px] whitespace-nowrap pointer-events-none opacity-0 group-hover/ctoggle:opacity-100 transition-opacity duration-150 z-20"
-                style={{
-                  background: '#2a2b30',
-                  border: '1px solid rgba(255,255,255,0.09)',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
-                }}
-              >
-                <span className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
-                  {enabled ? 'Locked' : 'Unlocked'}
-                </span>
-                <div
-                  className="absolute top-full left-1/2 -translate-x-1/2"
-                  style={{
-                    width: 0, height: 0,
-                    borderLeft: '4px solid transparent',
-                    borderRight: '4px solid transparent',
-                    borderTop: '4px solid #2a2b30',
-                  }}
-                />
-              </div>
             </div>
           </div>
 
           {/* Expandable content */}
-          {enabled && children && (
+          {(enabled || onRequestUpdate) && children && (
             <div
               className="mt-[12px] rounded-[8px] p-[14px]"
               style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}
