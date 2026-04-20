@@ -2250,12 +2250,12 @@ export default function WorkspacePage() {
       </div>
 
       {/* ── Scrollable content ── */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide min-h-0 px-[28px] py-[24px]">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide min-h-0 px-[28px] pb-[24px]">
         <div className="max-w-[860px] mx-auto flex flex-col gap-[28px]">
 
           {/* ── Section 1: Graphics Library ── */}
           {activeTab === 'graphics' && <div ref={graphicsRef}>
-            <div className="flex items-start justify-between mb-[14px]">
+            <div className="flex items-start justify-between mb-[14px] pt-[24px]">
               <div>
                 <h2 className="font-semibold text-[15px] text-[#fafaf9] mb-[4px]">
                   Graphics Library
@@ -2289,7 +2289,7 @@ export default function WorkspacePage() {
             </div>
 
             {/* Search + filter tabs + view toggle */}
-            <div className="flex items-center gap-[8px] mb-[12px]">
+            <div className="flex items-center gap-[8px] sticky top-0 z-10" style={{ background: '#0a0b0d', paddingTop: 10, paddingBottom: 10, marginBottom: 2 }}>
               <div className="relative flex items-center flex-1">
                 <svg width="13" height="13" viewBox="0 0 13 13" fill="none" className="absolute left-[9px] pointer-events-none" style={{ color: 'rgba(255,255,255,0.3)' }}>
                   <circle cx="5.5" cy="5.5" r="4" stroke="currentColor" strokeWidth="1.4" />
@@ -2521,7 +2521,7 @@ export default function WorkspacePage() {
 
           {/* ── Section 2: Branding Constraints ── */}
           {activeTab === 'branding' && <div ref={brandingRef}>
-            <div className="mb-[14px]">
+            <div className="mb-[14px] pt-[24px]">
               <h2 className="font-semibold text-[15px] text-[#fafaf9] mb-[4px]">
                 Branding Guidelines
               </h2>
