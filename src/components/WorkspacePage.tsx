@@ -2253,14 +2253,6 @@ export default function WorkspacePage({ plan = 'enterprise' }: { plan?: Plan }) 
               {enabledCount} of {ALL_GRAPHICS.length} graphics enabled
             </span>
           </>}
-          {plan === 'team' && <>
-            <div className="w-px h-[16px]" style={{ background: 'rgba(255,255,255,0.1)' }} />
-            <div className="flex items-center gap-[6px]">
-              <span className="text-[13px]" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                <span className="font-semibold" style={{ color: '#fafaf9' }}>134</span> seats purchased
-              </span>
-            </div>
-          </>}
         </div>
 
         <div className="flex items-center gap-[10px]">
