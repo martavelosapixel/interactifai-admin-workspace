@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
+import type { Plan } from './AdminPortal'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type GraphicId = 'logo' | 'ticker' | 'timer' | 'agenda' | 'qa' | 'poll' | 'external' | 'waiting-room' | 'nametag' | 'social-feed' | 'lower-third' | 'scoreboard' | 'sponsor-banner'
-type Badge = 'default' | 'enterprise'
+type GraphicId = 'logo' | 'ticker' | 'timer' | 'agenda' | 'qa' | 'poll' | 'external' | 'waiting-room' | 'nametag' | 'social-feed' | 'lower-third' | 'scoreboard' | 'sponsor-banner' | 'custom-template' | 'custom-overlay' | 'custom-widget'
+type Badge = 'default' | 'enterprise' | 'custom'
 type PermissionKey = 'add' | 'edit' | 'view' | 'interact'
 
 interface RolePermissions {
@@ -191,6 +192,35 @@ function SponsorBannerIcon({ className }: { className?: string }) {
 }
 
 
+function CustomTemplateIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <rect x="1.5" y="1.5" width="13" height="13" rx="2" stroke="currentColor" strokeWidth="1.4" />
+      <path d="M5 8H11M8 5V11" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function CustomOverlayIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <rect x="1.5" y="1.5" width="13" height="13" rx="2" stroke="currentColor" strokeWidth="1.4" />
+      <path d="M5 5H11M5 8H9M5 11H7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function CustomWidgetIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <rect x="1.5" y="1.5" width="5.5" height="5.5" rx="1.5" stroke="currentColor" strokeWidth="1.4" />
+      <rect x="9" y="1.5" width="5.5" height="5.5" rx="1.5" stroke="currentColor" strokeWidth="1.4" />
+      <rect x="1.5" y="9" width="5.5" height="5.5" rx="1.5" stroke="currentColor" strokeWidth="1.4" />
+      <rect x="9" y="9" width="5.5" height="5.5" rx="1.5" stroke="currentColor" strokeWidth="1.4" />
+    </svg>
+  )
+}
+
 function PlusSmIcon() {
   return (
     <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
@@ -223,6 +253,12 @@ const GRAPHICS: Graphic[] = [
   { id: 'lower-third',    name: 'Lower Third',      description: 'Branded speaker name and title overlay anchored to the bottom frame', badge: 'enterprise', Icon: LowerThirdIcon     },
   { id: 'scoreboard',     name: 'Scoreboard',       description: 'Live score display for competitions, debates and sports events',      badge: 'enterprise', Icon: ScoreboardIcon     },
   { id: 'sponsor-banner', name: 'Sponsor Banner',   description: 'Rotating sponsor logos and branded ad placements during the meeting', badge: 'enterprise', Icon: SponsorBannerIcon  },
+]
+
+const CUSTOM_GRAPHICS: Graphic[] = [
+  { id: 'custom-template', name: 'Custom Template', description: 'Create and publish your own fully branded graphic template',          badge: 'custom', Icon: CustomTemplateIcon },
+  { id: 'custom-overlay',  name: 'Custom Overlay',  description: 'Design a full-screen custom overlay for your meetings',              badge: 'custom', Icon: CustomOverlayIcon  },
+  { id: 'custom-widget',   name: 'Custom Widget',   description: 'Build a custom sidebar or corner widget to display live data',       badge: 'custom', Icon: CustomWidgetIcon   },
 ]
 
 const BRAND_THEMES_DEFAULT: ColorTheme[] = [
@@ -445,12 +481,46 @@ function GraphicMiniPreview({ id, enabled }: { id: string; enabled: boolean }) {
     </div>
   )
 
+  if (id === 'custom-template') return (
+    <div style={s}>
+      <div style={{ width: 60, height: 36, borderRadius: 4, border: '1px dashed rgba(52,211,153,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ color: 'rgba(52,211,153,0.7)', fontSize: 16 }}>+</div>
+      </div>
+    </div>
+  )
+
+  if (id === 'custom-overlay') return (
+    <div style={s}>
+      <div style={{ width: 60, height: 36, borderRadius: 4, border: '1px solid rgba(52,211,153,0.3)', background: 'rgba(52,211,153,0.05)', padding: 4, display: 'flex', flexDirection: 'column', gap: 3 }}>
+        {[40, 28, 20].map((w, i) => <div key={i} style={{ height: 4, width: w, borderRadius: 2, background: 'rgba(52,211,153,0.4)' }} />)}
+      </div>
+    </div>
+  )
+
+  if (id === 'custom-widget') return (
+    <div style={s}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3, width: 36, height: 36 }}>
+        {[0,1,2,3].map(i => <div key={i} style={{ borderRadius: 3, background: 'rgba(52,211,153,0.25)', border: '1px solid rgba(52,211,153,0.3)' }} />)}
+      </div>
+    </div>
+  )
+
   return <div style={s}><div style={{ width: 20, height: 20, borderRadius: 4, background: 'rgba(255,255,255,0.08)' }} /></div>
 }
 
 // ─── BadgeChip ────────────────────────────────────────────────────────────────
 
 function BadgeChip({ type }: { type: Badge }) {
+  if (type === 'custom') {
+    return (
+      <span
+        className="text-[10px] font-medium px-[7px] py-[2px] rounded-full"
+        style={{ background: 'rgba(52,211,153,0.12)', color: '#34d399' }}
+      >
+        Custom
+      </span>
+    )
+  }
   if (type === 'enterprise') {
     return (
       <span
@@ -955,6 +1025,32 @@ function GraphicCardPreview({ id, enabled }: { id: string; enabled: boolean }) {
         {['#615fff', '#ffa726', '#10b981'].map((c, i) => (
           <div key={i} style={{ flex: 1, height: 16, borderRadius: 4, background: c, opacity: 0.7 }} />
         ))}
+      </div>
+    </div>
+  )
+
+  if (id === 'custom-template') return (
+    <div style={{ ...base, flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+      <div style={{ width: 52, height: 38, borderRadius: 6, border: '2px dashed rgba(52,211,153,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <span style={{ fontSize: 20, color: 'rgba(52,211,153,0.6)', fontWeight: 300 }}>+</span>
+      </div>
+      <div style={{ fontSize: 9, color: 'rgba(52,211,153,0.6)', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Custom</div>
+    </div>
+  )
+
+  if (id === 'custom-overlay') return (
+    <div style={{ ...base, flexDirection: 'column', padding: 16, gap: 6 }}>
+      <div style={{ width: '100%', height: 5, borderRadius: 3, background: 'rgba(52,211,153,0.5)' }} />
+      <div style={{ width: '75%', height: 4, borderRadius: 3, background: 'rgba(52,211,153,0.3)' }} />
+      <div style={{ width: '55%', height: 4, borderRadius: 3, background: 'rgba(52,211,153,0.2)' }} />
+      <div style={{ marginTop: 6, width: 32, height: 32, borderRadius: 6, border: '1px solid rgba(52,211,153,0.3)', background: 'rgba(52,211,153,0.06)' }} />
+    </div>
+  )
+
+  if (id === 'custom-widget') return (
+    <div style={base}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, width: 70, height: 50 }}>
+        {[0,1,2,3].map(i => <div key={i} style={{ borderRadius: 5, background: 'rgba(52,211,153,0.12)', border: '1px solid rgba(52,211,153,0.25)' }} />)}
       </div>
     </div>
   )
@@ -2082,8 +2178,15 @@ interface BrandingState {
   customGraphics: boolean
 }
 
-export default function WorkspacePage() {
+export default function WorkspacePage({ plan = 'enterprise' }: { plan?: Plan }) {
   const [activeTab, setActiveTab] = useState<'graphics' | 'branding'>('graphics')
+  const ALL_GRAPHICS = plan === 'enterprise'
+    ? GRAPHICS
+    : [...GRAPHICS.filter(g => g.badge !== 'enterprise'), ...CUSTOM_GRAPHICS]
+
+  // Reset filter when plan changes so stale 'enterprise'/'custom' tab doesn't persist
+  useEffect(() => { setGraphicFilter('all') }, [plan])
+
   const [graphics, setGraphics] = useState<GraphicState>({
     logo: true, ticker: true, timer: true, agenda: true,
     qa: true, poll: false, external: false, 'waiting-room': true,
@@ -2107,12 +2210,12 @@ export default function WorkspacePage() {
   const [externalContentPdfName, setExternalContentPdfName] = useState<string | null>(null)
   const [waitingRoomBackground, setWaitingRoomBackground] = useState<string | null>(null)
 
-  const [graphicFilter, setGraphicFilter] = useState<'all' | 'default' | 'enterprise'>('all')
+  const [graphicFilter, setGraphicFilter] = useState<'all' | Badge>('all')
   const [graphicSearch, setGraphicSearch] = useState('')
   const [graphicView, setGraphicView] = useState<'list' | 'card'>('list')
 
   const [graphicPermissions, setGraphicPermissions] = useState<GraphicPermissionMap>(() =>
-    Object.fromEntries(GRAPHICS.map(g => [g.id, { ...DEFAULT_ROLE_PERMISSIONS }]))
+    Object.fromEntries([...GRAPHICS, ...CUSTOM_GRAPHICS].map(g => [g.id, { ...DEFAULT_ROLE_PERMISSIONS }]))
   )
 
   const updateGraphicPermission = (graphicId: string, role: string, key: PermissionKey, value: boolean) => {
@@ -2182,7 +2285,7 @@ export default function WorkspacePage() {
           {activeTab === 'graphics' && <>
             <div className="w-px h-[16px]" style={{ background: 'rgba(255,255,255,0.1)' }} />
             <span className="text-[13px]" style={{ color: 'rgba(255,255,255,0.45)' }}>
-              {enabledCount} of {GRAPHICS.length} graphics enabled
+              {enabledCount} of {ALL_GRAPHICS.length} graphics enabled
             </span>
           </>}
         </div>
@@ -2269,7 +2372,7 @@ export default function WorkspacePage() {
               {/* Quick-actions */}
               <div className="flex items-center gap-[6px] shrink-0 ml-[20px]">
                 <button
-                  onClick={() => { setGraphics(Object.fromEntries(GRAPHICS.map(g => [g.id, true]))); setDirty(true) }}
+                  onClick={() => { setGraphics(Object.fromEntries(ALL_GRAPHICS.map(g => [g.id, true]))); setDirty(true) }}
                   className="text-[12px] font-medium px-[10px] py-[5px] rounded-[6px] cursor-pointer border-0 transition-colors"
                   style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.55)' }}
                   onMouseEnter={e => (e.currentTarget.style.color = '#fafaf9')}
@@ -2278,7 +2381,7 @@ export default function WorkspacePage() {
                   Enable all
                 </button>
                 <button
-                  onClick={() => { setGraphics(Object.fromEntries(GRAPHICS.map(g => [g.id, false]))); setDirty(true) }}
+                  onClick={() => { setGraphics(Object.fromEntries(ALL_GRAPHICS.map(g => [g.id, false]))); setDirty(true) }}
                   className="text-[12px] font-medium px-[10px] py-[5px] rounded-[6px] cursor-pointer border-0 transition-colors"
                   style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.55)' }}
                   onMouseEnter={e => (e.currentTarget.style.color = '#fafaf9')}
@@ -2306,12 +2409,12 @@ export default function WorkspacePage() {
                 />
               </div>
               <div className="flex gap-[2px] p-[3px] rounded-[8px] shrink-0" style={{ background: 'rgba(255,255,255,0.05)' }}>
-                {(['all', 'default', 'enterprise'] as const).map(tab => {
-                  const count = tab === 'all' ? GRAPHICS.length : GRAPHICS.filter(g => g.badge === tab).length
+                {(['all', 'default', plan === 'enterprise' ? 'enterprise' : 'custom'] as Badge[]).map(tab => {
+                  const count = tab === 'all' ? ALL_GRAPHICS.length : ALL_GRAPHICS.filter(g => g.badge === tab).length
                   return (
                     <button
                       key={tab}
-                      onClick={() => setGraphicFilter(tab)}
+                      onClick={() => setGraphicFilter(tab as typeof graphicFilter)}
                       className="flex items-center gap-[5px] text-[12px] font-medium px-[12px] py-[5px] rounded-[6px] capitalize cursor-pointer border-0 transition-all"
                       style={graphicFilter === tab
                         ? { background: 'rgba(255,255,255,0.1)', color: '#fafaf9' }
@@ -2354,7 +2457,7 @@ export default function WorkspacePage() {
             </div>
 
             {(() => {
-              const filtered = GRAPHICS
+              const filtered = ALL_GRAPHICS
                 .filter(g => graphicFilter === 'all' || g.badge === graphicFilter)
                 .filter(g => !graphicSearch.trim() || g.name.toLowerCase().includes(graphicSearch.toLowerCase()))
 

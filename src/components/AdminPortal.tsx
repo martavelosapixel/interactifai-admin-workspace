@@ -5,6 +5,7 @@ import WorkspacePage from './WorkspacePage'
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type Page = 'team' | 'workspace'
+export type Plan = 'enterprise' | 'team'
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
@@ -53,9 +54,10 @@ function SettingsIcon({ className }: { className?: string }) {
 interface AdminSidebarProps {
   activePage: Page
   onNavigate: (page: Page) => void
+  plan: Plan
 }
 
-function AdminSidebar({ activePage, onNavigate }: AdminSidebarProps) {
+function AdminSidebar({ activePage, onNavigate, plan }: AdminSidebarProps) {
   const isWorkspace = activePage === 'workspace'
 
   return (
@@ -79,7 +81,7 @@ function AdminSidebar({ activePage, onNavigate }: AdminSidebarProps) {
             Breezy's Workspace
           </span>
           <span className="text-[11px] leading-[15px] truncate" style={{ color: 'rgba(255,255,255,0.4)' }}>
-            Enterprise Plan
+            {plan === 'enterprise' ? 'Enterprise Plan' : 'Team Plan'}
           </span>
         </div>
       </div>
@@ -169,17 +171,79 @@ function AdminSidebar({ activePage, onNavigate }: AdminSidebarProps) {
 
 export default function AdminPortal() {
   const [activePage, setActivePage] = useState<Page>('workspace')
+  const [plan, setPlan] = useState<Plan>('enterprise')
 
   return (
     <div
-      className="w-[1440px] h-[900px] flex overflow-hidden rounded-[8px]"
+      className="w-[1440px] h-[900px] flex flex-col overflow-hidden rounded-[8px]"
       style={{ background: '#0a0b0d' }}
     >
-      <AdminSidebar activePage={activePage} onNavigate={setActivePage} />
-      <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {activePage === 'team' && <TeamPage />}
-        {activePage === 'workspace' && <WorkspacePage />}
-      </main>
+      {/* ── Master Plan Tab ── */}
+      <div
+        className="shrink-0 flex items-center justify-between px-[20px] h-[46px]"
+        style={{ background: '#080909', borderBottom: '1px solid rgba(255,255,255,0.07)' }}
+      >
+        {/* Brand mark */}
+        <div className="flex items-center gap-[8px]">
+          <div
+            className="w-[22px] h-[22px] rounded-[6px] flex items-center justify-center shrink-0"
+            style={{ background: 'linear-gradient(135deg, #615fff 0%, #0283ff 100%)' }}
+          >
+            <svg width="11" height="11" viewBox="0 0 16 16" fill="none">
+              <circle cx="8" cy="8" r="4.5" stroke="white" strokeWidth="1.8" />
+              <path d="M8 3.5V5M8 11V12.5M3.5 8H5M11 8H12.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
+            </svg>
+          </div>
+          <span className="text-[12px] font-semibold text-[#fafaf9]">Breezy</span>
+        </div>
+
+        {/* Plan switcher — centred */}
+        <div
+          className="flex gap-[2px] p-[3px] rounded-[8px] absolute left-1/2 -translate-x-1/2"
+          style={{ background: 'rgba(255,255,255,0.05)' }}
+        >
+          {(['enterprise', 'team'] as Plan[]).map(p => {
+            const isActive = plan === p
+            const label = p === 'enterprise' ? 'Enterprise' : 'Team Plan'
+            return (
+              <button
+                key={p}
+                onClick={() => setPlan(p)}
+                className="flex items-center gap-[6px] text-[12px] font-medium px-[14px] py-[5px] rounded-[6px] cursor-pointer border-0 transition-all"
+                style={isActive
+                  ? { background: 'rgba(255,255,255,0.1)', color: '#fafaf9' }
+                  : { background: 'transparent', color: 'rgba(255,255,255,0.4)' }}
+              >
+                {p === 'enterprise' && (
+                  <span
+                    className="w-[6px] h-[6px] rounded-full shrink-0"
+                    style={{ background: isActive ? '#a5b4fc' : 'rgba(255,255,255,0.2)' }}
+                  />
+                )}
+                {p === 'team' && (
+                  <span
+                    className="w-[6px] h-[6px] rounded-full shrink-0"
+                    style={{ background: isActive ? '#34d399' : 'rgba(255,255,255,0.2)' }}
+                  />
+                )}
+                {label}
+              </button>
+            )
+          })}
+        </div>
+
+        {/* Spacer to balance the brand mark */}
+        <div className="w-[80px]" />
+      </div>
+
+      {/* ── Main layout ── */}
+      <div className="flex flex-1 min-h-0 overflow-hidden">
+        <AdminSidebar activePage={activePage} onNavigate={setActivePage} plan={plan} />
+        <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
+          {activePage === 'team' && <TeamPage />}
+          {activePage === 'workspace' && <WorkspacePage plan={plan} />}
+        </main>
+      </div>
     </div>
   )
 }
