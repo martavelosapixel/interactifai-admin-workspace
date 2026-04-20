@@ -1123,6 +1123,134 @@ function GraphicCard({ graphic, enabled, onToggle, permissions, onPermissionChan
 
 // ─── Constraint row ───────────────────────────────────────────────────────────
 
+// ─── Request Update Modal ─────────────────────────────────────────────────────
+
+function RequestUpdateModal({ asset, onClose }: { asset: string; onClose: () => void }) {
+  const [message, setMessage] = useState('')
+  const [sent, setSent] = useState(false)
+
+  const handleSend = () => {
+    if (!message.trim()) return
+    setSent(true)
+    setTimeout(onClose, 1600)
+  }
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center"
+      style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}
+      onClick={e => { if (e.target === e.currentTarget) onClose() }}
+    >
+      <div
+        className="flex flex-col rounded-[14px] w-[420px] overflow-hidden"
+        style={{ background: '#16181d', border: '1px solid rgba(255,255,255,0.09)', boxShadow: '0 24px 48px rgba(0,0,0,0.5)' }}
+      >
+        {/* Header */}
+        <div className="flex items-start justify-between px-[22px] pt-[22px] pb-[16px]" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+          <div>
+            <p className="font-semibold text-[14px] text-[#fafaf9] mb-[3px]">Request Update</p>
+            <p className="text-[12px]" style={{ color: 'rgba(255,255,255,0.4)' }}>
+              {asset}
+            </p>
+          </div>
+          <button
+            onClick={onClose}
+            className="flex items-center justify-center w-[26px] h-[26px] rounded-[6px] border-0 cursor-pointer transition-colors shrink-0 mt-[1px]"
+            style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.5)' }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = '#fafaf9' }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = 'rgba(255,255,255,0.5)' }}
+          >
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+              <path d="M1.5 1.5L8.5 8.5M8.5 1.5L1.5 8.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="px-[22px] py-[18px] flex flex-col gap-[14px]">
+          {/* To field */}
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.3)' }}>To</label>
+            <div
+              className="flex items-center gap-[8px] px-[12px] py-[8px] rounded-[8px]"
+              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+            >
+              <div
+                className="w-[22px] h-[22px] rounded-full flex items-center justify-center shrink-0 text-[9px] font-bold text-white"
+                style={{ background: 'linear-gradient(135deg, #615fff 0%, #0283ff 100%)' }}
+              >
+                BT
+              </div>
+              <span className="text-[12px]" style={{ color: 'rgba(255,255,255,0.7)' }}>Brand Team</span>
+              <span className="text-[11px] ml-auto" style={{ color: 'rgba(255,255,255,0.25)' }}>brand@support.com</span>
+            </div>
+          </div>
+
+          {/* Message field */}
+          <div className="flex flex-col gap-[6px]">
+            <label className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.3)' }}>Message</label>
+            <textarea
+              autoFocus
+              rows={4}
+              placeholder={`Describe what you need updated for "${asset}"…`}
+              value={message}
+              onChange={e => setMessage(e.target.value)}
+              className="resize-none rounded-[8px] text-[13px] leading-[18px] px-[12px] py-[10px] outline-none transition-colors"
+              style={{
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.07)',
+                color: '#fafaf9',
+                fontFamily: 'inherit',
+              }}
+              onFocus={e => { e.currentTarget.style.border = '1px solid rgba(97,95,255,0.5)' }}
+              onBlur={e => { e.currentTarget.style.border = '1px solid rgba(255,255,255,0.07)' }}
+            />
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="flex items-center justify-end gap-[8px] px-[22px] pb-[20px]">
+          <button
+            onClick={onClose}
+            className="h-[34px] px-[16px] rounded-[8px] border-0 cursor-pointer text-[13px] font-medium transition-colors"
+            style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.55)' }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = '#fafaf9' }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = 'rgba(255,255,255,0.55)' }}
+          >
+            Cancel
+          </button>
+          {sent ? (
+            <div className="flex items-center gap-[6px] h-[34px] px-[16px] rounded-[8px]" style={{ background: 'rgba(34,197,94,0.12)', color: '#4ade80' }}>
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path d="M2 6L4.5 8.5L10 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <span className="text-[13px] font-medium">Sent</span>
+            </div>
+          ) : (
+            <button
+              onClick={handleSend}
+              className="flex items-center gap-[6px] h-[34px] px-[16px] rounded-[8px] border-0 cursor-pointer text-[13px] font-medium transition-all"
+              style={{
+                background: message.trim() ? '#615fff' : 'rgba(97,95,255,0.25)',
+                color: message.trim() ? '#fff' : 'rgba(255,255,255,0.3)',
+                cursor: message.trim() ? 'pointer' : 'default',
+              }}
+            >
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path d="M1.5 6H10.5M7 2.5L10.5 6L7 9.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Send Request
+            </button>
+          )}
+        </div>
+      </div>
+    </div>,
+    document.body
+  )
+}
+
+// ─── Constraint Row ───────────────────────────────────────────────────────────
+
 interface ConstraintRowProps {
   Icon: React.ComponentType<{ className?: string }>
   title: string
@@ -1131,9 +1259,10 @@ interface ConstraintRowProps {
   onToggle: () => void
   isLast: boolean
   children?: React.ReactNode
+  onRequestUpdate?: () => void
 }
 
-function ConstraintRow({ title, description, enabled, onToggle, isLast, children }: Omit<ConstraintRowProps, 'Icon'>) {
+function ConstraintRow({ title, description, enabled, onToggle, isLast, children, onRequestUpdate }: Omit<ConstraintRowProps, 'Icon'>) {
   return (
     <div
       className="px-[20px] py-[14px] transition-colors"
@@ -1147,6 +1276,21 @@ function ConstraintRow({ title, description, enabled, onToggle, isLast, children
               <p className="text-[12px] leading-[16px]" style={{ color: 'rgba(255,255,255,0.4)' }}>
                 {description}
               </p>
+              {onRequestUpdate && (
+                <button
+                  onClick={onRequestUpdate}
+                  className="inline-flex items-center gap-[5px] mt-[8px] px-[9px] py-[4px] rounded-[6px] border-0 cursor-pointer text-[11px] font-medium transition-colors"
+                  style={{ background: 'rgba(97,95,255,0.1)', color: '#a5a3ff' }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(97,95,255,0.18)'; e.currentTarget.style.color = '#c4c3ff' }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(97,95,255,0.1)'; e.currentTarget.style.color = '#a5a3ff' }}
+                >
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                    <path d="M5 1.5V5L7 7" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                    <circle cx="5" cy="5" r="4" stroke="currentColor" strokeWidth="1.3" />
+                  </svg>
+                  Request Update
+                </button>
+              )}
             </div>
             <div className="relative flex items-center shrink-0 mt-[1px] group/ctoggle">
               <Toggle on={enabled} onChange={onToggle} />
@@ -2209,6 +2353,7 @@ export default function WorkspacePage({ plan = 'enterprise' }: { plan?: Plan }) 
   }
   const [dirty, setDirty] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [requestModal, setRequestModal] = useState<string | null>(null)
 
   const graphicsRef = useRef<HTMLDivElement>(null)
   const brandingRef = useRef<HTMLDivElement>(null)
@@ -2609,6 +2754,8 @@ export default function WorkspacePage({ plan = 'enterprise' }: { plan?: Plan }) 
               </p>
             </div>
 
+            {requestModal && <RequestUpdateModal asset={requestModal} onClose={() => setRequestModal(null)} />}
+
             <SectionCard>
               {/* Color Palette Lock */}
               <ConstraintRow
@@ -2618,6 +2765,7 @@ export default function WorkspacePage({ plan = 'enterprise' }: { plan?: Plan }) 
                 enabled={branding.colorLock}
                 onToggle={() => toggleBranding('colorLock')}
                 isLast={false}
+                onRequestUpdate={plan === 'enterprise' ? () => setRequestModal('Color Palette Lock') : undefined}
               >
                 <div className="flex gap-[14px] items-start">
                   <div className="flex-1 min-w-0">
@@ -2634,6 +2782,7 @@ export default function WorkspacePage({ plan = 'enterprise' }: { plan?: Plan }) 
                 enabled={branding.fontLock}
                 onToggle={() => toggleBranding('fontLock')}
                 isLast={false}
+                onRequestUpdate={plan === 'enterprise' ? () => setRequestModal('Font Override Lock') : undefined}
               >
                 <div className="flex gap-[14px] items-start">
                   <div className="flex-1 min-w-0">
@@ -2653,6 +2802,7 @@ export default function WorkspacePage({ plan = 'enterprise' }: { plan?: Plan }) 
                 enabled={branding.logoLock}
                 onToggle={() => toggleBranding('logoLock')}
                 isLast={false}
+                onRequestUpdate={plan === 'enterprise' ? () => setRequestModal('Logo Lock') : undefined}
               >
                 <ImageUploader
                   value={logoFile}
@@ -2670,6 +2820,7 @@ export default function WorkspacePage({ plan = 'enterprise' }: { plan?: Plan }) 
                 enabled={branding.customGraphics}
                 onToggle={() => toggleBranding('customGraphics')}
                 isLast={true}
+                onRequestUpdate={plan === 'enterprise' ? () => setRequestModal('Custom Team Graphics') : undefined}
               >
                 <div className="flex items-center gap-[8px]">
                   <div
