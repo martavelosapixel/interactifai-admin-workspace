@@ -80,9 +80,19 @@ function AdminSidebar({ activePage, onNavigate, plan }: AdminSidebarProps) {
           <span className="font-semibold text-[13px] text-[#fafaf9] leading-[17px] truncate">
             Breezy's Workspace
           </span>
-          <span className="text-[11px] leading-[15px] truncate" style={{ color: 'rgba(255,255,255,0.4)' }}>
-            {plan === 'enterprise' ? 'Enterprise Plan' : 'Team Plan'}
-          </span>
+          <div className="flex items-center gap-[6px]">
+            <span className="text-[11px] leading-[15px] truncate" style={{ color: 'rgba(255,255,255,0.4)' }}>
+              {plan === 'enterprise' ? 'Enterprise Plan' : 'Team Plan'}
+            </span>
+            <button
+              className="text-[10px] font-medium leading-[15px] px-[5px] rounded-[4px] border-0 cursor-pointer shrink-0 transition-colors"
+              style={{ background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.55)' }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.14)'; e.currentTarget.style.color = '#fafaf9' }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = 'rgba(255,255,255,0.55)' }}
+            >
+              Manage
+            </button>
+          </div>
         </div>
       </div>
 
