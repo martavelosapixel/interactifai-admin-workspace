@@ -2409,7 +2409,7 @@ export default function WorkspacePage({ plan = 'enterprise' }: { plan?: Plan }) 
                 />
               </div>
               <div className="flex gap-[2px] p-[3px] rounded-[8px] shrink-0" style={{ background: 'rgba(255,255,255,0.05)' }}>
-                {(['all', 'default', plan === 'enterprise' ? 'enterprise' : 'custom'] as Badge[]).map(tab => {
+                {(['all', 'default', plan === 'enterprise' ? 'enterprise' : 'custom'] as ('all' | Badge)[]).map(tab => {
                   const count = tab === 'all' ? ALL_GRAPHICS.length : ALL_GRAPHICS.filter(g => g.badge === tab).length
                   return (
                     <button
