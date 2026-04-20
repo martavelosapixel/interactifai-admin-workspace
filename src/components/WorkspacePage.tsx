@@ -2261,7 +2261,7 @@ export default function WorkspacePage({ section }: { section: 'graphics' | 'bran
             </div>
 
             {/* Search + filter tabs + view toggle */}
-            <div className="flex items-center gap-[8px] mb-[12px]">
+            <div className="flex items-center gap-[8px] sticky top-0 z-10" style={{ background: '#0a0b0d', paddingTop: 4, paddingBottom: 10, marginBottom: 2 }}>
               <div className="relative flex items-center flex-1">
                 <svg width="13" height="13" viewBox="0 0 13 13" fill="none" className="absolute left-[9px] pointer-events-none" style={{ color: 'rgba(255,255,255,0.3)' }}>
                   <circle cx="5.5" cy="5.5" r="4" stroke="currentColor" strokeWidth="1.4" />
