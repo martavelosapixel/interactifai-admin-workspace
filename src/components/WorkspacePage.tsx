@@ -1929,7 +1929,7 @@ function SwatchRow({
   onAdd: (color: string) => void
   onSelect?: (color: string | null) => void
 }) {
-  const [selectedIdx, setSelectedIdx] = useState<number | null>(null)
+  const [selectedIdx, setSelectedIdx] = useState<number | null>(() => colors.length > 0 ? 0 : null)
   const [editing, setEditing] = useState<{ idx: number; rect: DOMRect } | null>(null)
 
   const handleSelect = (i: number) => {
@@ -2862,7 +2862,14 @@ export default function WorkspacePage({ plan = 'enterprise' }: { plan?: Plan }) 
   const [dirty, setDirty] = useState(false)
   const [activeSwatchColors, setActiveSwatchColors] = useState<{
     primary?: string | null; secondary?: string | null; font?: string | null
-  }>({})
+  }>(() => {
+    const t = BRAND_THEMES_DEFAULT[0]
+    return {
+      primary:   t?.primary[0]   ?? null,
+      secondary: t?.secondary[0] ?? null,
+      font:      t?.font[0]      ?? null,
+    }
+  })
   const [saved, setSaved] = useState(false)
 
   const graphicsRef = useRef<HTMLDivElement>(null)
