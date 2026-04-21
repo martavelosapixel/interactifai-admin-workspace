@@ -2270,149 +2270,6 @@ function ThemePreview({ themes, company, activeColors }: {
   )
 }
 
-// ─── Font preview ─────────────────────────────────────────────────────────────
-
-function NameTagFontPreview({ fontFamily, company }: { fontFamily: string; company: string }) {
-  return (
-    <div style={{ width: 170, background: 'white', borderRadius: 12, overflow: 'hidden', boxShadow: '0 8px 24px rgba(0,0,0,0.6)' }}>
-      <div style={{ height: 5, background: '#615fff' }} />
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px' }}>
-        <div style={{ width: 38, height: 38, borderRadius: '50%', background: '#2a2b2e', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-          <span style={{ fontSize: 11, fontWeight: 700, color: '#ffa726', fontFamily }}>JS</span>
-        </div>
-        <div>
-          <p style={{ fontSize: 13, fontWeight: 700, color: '#1a1a1a', margin: 0, lineHeight: 1.2, fontFamily }}>Jeff Smith</p>
-          <p style={{ fontSize: 10, color: '#888', margin: '3px 0 0', lineHeight: 1.2, fontFamily }}>Product Designer</p>
-          <p style={{ fontSize: 10, fontWeight: 600, color: '#615fff', margin: '3px 0 0', lineHeight: 1.2, fontFamily }}>{company}</p>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function LowerThirdFontPreview({ fontFamily, company }: { fontFamily: string; company: string }) {
-  return (
-    <div style={{ width: 170 }}>
-      <div style={{ background: '#615fff', padding: '7px 12px 5px' }}>
-        <p style={{ fontSize: 13, fontWeight: 700, color: '#fafaf9', margin: 0, lineHeight: 1.2, fontFamily }}>Jeff Smith</p>
-      </div>
-      <div style={{ background: 'rgba(20,21,24,0.92)', padding: '5px 12px 7px', borderLeft: '3px solid #ffa726' }}>
-        <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.65)', margin: 0, lineHeight: 1.4, fontFamily }}>Product Designer · {company}</p>
-      </div>
-    </div>
-  )
-}
-
-function ScoreBoardFontPreview({ fontFamily }: { fontFamily: string }) {
-  return (
-    <div style={{ width: 170, background: 'rgba(20,21,24,0.95)', borderRadius: 8, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}>
-      <div style={{ background: '#615fff', padding: '5px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={{ fontSize: 9, fontWeight: 700, color: '#fafaf9', letterSpacing: '0.06em', fontFamily }}>LIVE</span>
-        <span style={{ fontSize: 9, fontWeight: 700, color: '#fafaf9', fontFamily }}>Q1 · 12:34</span>
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px' }}>
-        <div style={{ textAlign: 'center' }}>
-          <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', margin: '0 0 3px', fontWeight: 600, letterSpacing: '0.05em', fontFamily }}>HOME</p>
-          <p style={{ fontSize: 24, fontWeight: 800, color: '#fff', margin: 0, lineHeight: 1, fontFamily }}>24</p>
-        </div>
-        <span style={{ fontSize: 12, color: '#ffa726', fontWeight: 700, fontFamily }}>VS</span>
-        <div style={{ textAlign: 'center' }}>
-          <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', margin: '0 0 3px', fontWeight: 600, letterSpacing: '0.05em', fontFamily }}>AWAY</p>
-          <p style={{ fontSize: 24, fontWeight: 800, color: '#fff', margin: 0, lineHeight: 1, fontFamily }}>17</p>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function FontPreview({ fonts, company }: { fonts: string[]; company: string }) {
-  const [graphicIdx, setGraphicIdx] = useState(0)
-  const [fontIdx, setFontIdx] = useState(0)
-  const safeFontIdx = Math.min(fontIdx, Math.max(0, fonts.length - 1))
-  const fontName   = fonts[safeFontIdx] ?? 'Plus Jakarta Sans'
-  const fontFamily = `'${fontName}', sans-serif`
-  const graphic    = PREVIEW_GRAPHICS[graphicIdx]
-
-  // Inject preview font
-  useEffect(() => { fonts.forEach(injectGoogleFont) }, [fonts])
-
-  return (
-    <div
-      className="flex flex-col rounded-[10px] shrink-0"
-      style={{ width: 216, border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.02)', overflow: 'hidden' }}
-    >
-      {/* Header */}
-      <div className="px-[12px] pt-[10px] pb-[9px]" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-        <p className="text-[9px] font-bold uppercase tracking-widest mb-[7px]" style={{ color: 'rgba(255,255,255,0.3)' }}>Preview</p>
-        {/* Font pills */}
-        <div className="flex flex-wrap gap-[4px] mb-[5px]">
-          {fonts.length === 0
-            ? <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.2)' }}>No fonts added</span>
-            : fonts.map((f, i) => {
-                const isActive = i === safeFontIdx
-                return (
-                  <button
-                    key={f}
-                    onClick={() => setFontIdx(i)}
-                    className="border-0 cursor-pointer px-[8px] py-[3px] rounded-full text-[10px] font-medium transition-all duration-150 whitespace-nowrap"
-                    style={{
-                      background: isActive ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.05)',
-                      color: isActive ? '#fafaf9' : 'rgba(255,255,255,0.4)',
-                      border: `1px solid ${isActive ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.07)'}`,
-                      fontFamily: `'${f}', sans-serif`,
-                    }}
-                  >
-                    {f}
-                  </button>
-                )
-              })
-          }
-        </div>
-      </div>
-
-      {/* Preview area */}
-      <div
-        className="flex-1 flex items-center justify-center py-[22px] px-[14px]"
-        style={{ background: '#141518', minHeight: 148 }}
-      >
-        {fonts.length === 0
-          ? <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.2)', textAlign: 'center' }}>Add a font to preview</p>
-          : graphic.id === 'name-tag'    ? <NameTagFontPreview    fontFamily={fontFamily} company={company} />
-          : graphic.id === 'lower-third' ? <LowerThirdFontPreview fontFamily={fontFamily} company={company} />
-          : <ScoreBoardFontPreview fontFamily={fontFamily} />
-        }
-      </div>
-
-      {/* Navigation */}
-      <div className="flex items-center justify-between px-[8px] py-[8px]" style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}>
-        <button
-          onClick={() => setGraphicIdx(i => (i - 1 + PREVIEW_GRAPHICS.length) % PREVIEW_GRAPHICS.length)}
-          className="flex items-center justify-center rounded-[6px] border-0 cursor-pointer"
-          style={{ width: 24, height: 24, background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.4)' }}
-          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.09)'; (e.currentTarget as HTMLButtonElement).style.color = '#fafaf9' }}
-          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)'; (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.4)' }}
-        >
-          <svg width="7" height="10" viewBox="0 0 7 10" fill="none">
-            <path d="M5 1.5L2 5L5 8.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
-        <span className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.45)' }}>{graphic.name}</span>
-        <button
-          onClick={() => setGraphicIdx(i => (i + 1) % PREVIEW_GRAPHICS.length)}
-          className="flex items-center justify-center rounded-[6px] border-0 cursor-pointer"
-          style={{ width: 24, height: 24, background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.4)' }}
-          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.09)'; (e.currentTarget as HTMLButtonElement).style.color = '#fafaf9' }}
-          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)'; (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.4)' }}
-        >
-          <svg width="7" height="10" viewBox="0 0 7 10" fill="none">
-            <path d="M2 1.5L5 5L2 8.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
-      </div>
-    </div>
-  )
-}
-
 // ─── Enterprise Branding Guidelines ──────────────────────────────────────────
 
 function EnterpriseBrandingGuidelines({ themes, fonts }: { themes: ColorTheme[]; fonts: string[] }) {
@@ -3275,79 +3132,76 @@ export default function WorkspacePage({ plan = 'enterprise' }: { plan?: Plan }) 
                   </p>
                 </div>
 
-                <SectionCard>
-                  {/* Color Palette Lock */}
-                  <ConstraintRow
-                    title="Color Palette Lock"
-                    description="Restrict users to organization-approved brand colors only. Users cannot set custom colors outside this palette."
-                    enabled={branding.colorLock}
-                    onToggle={() => toggleBranding('colorLock')}
-                    isLast={false}
-                  >
-                    <div className="flex gap-[14px] items-start">
-                      <div className="flex-1 min-w-0">
+                <div className="flex gap-[14px] items-start">
+                  <div className="flex-1 min-w-0">
+                    <SectionCard>
+                      {/* Color Palette Lock */}
+                      <ConstraintRow
+                        title="Color Palette Lock"
+                        description="Restrict users to organization-approved brand colors only. Users cannot set custom colors outside this palette."
+                        enabled={branding.colorLock}
+                        onToggle={() => toggleBranding('colorLock')}
+                        isLast={false}
+                      >
                         <ColorThemeEditor
                           themes={brandThemes}
                           onChange={t => { setBrandThemes(t); setDirty(true) }}
                           onSwatchSelect={(slot, color) => setActiveSwatchColors(prev => ({ ...prev, [slot]: color }))}
                         />
-                      </div>
-                      <ThemePreview themes={brandThemes} company="Loom" activeColors={activeSwatchColors} />
-                    </div>
-                  </ConstraintRow>
+                      </ConstraintRow>
 
-                  {/* Font Override Lock */}
-                  <ConstraintRow
-                    title="Font Override Lock"
-                    description="Prevent users from changing the default organization typeface in graphic templates."
-                    enabled={branding.fontLock}
-                    onToggle={() => toggleBranding('fontLock')}
-                    isLast={false}
-                  >
-                    <div className="flex gap-[14px] items-start">
-                      <div className="flex-1 min-w-0">
+                      {/* Font Override Lock */}
+                      <ConstraintRow
+                        title="Font Override Lock"
+                        description="Prevent users from changing the default organization typeface in graphic templates."
+                        enabled={branding.fontLock}
+                        onToggle={() => toggleBranding('fontLock')}
+                        isLast={false}
+                      >
                         <FontManager
                           selected={selectedFonts}
                           onChange={f => { setSelectedFonts(f); setDirty(true) }}
                         />
-                      </div>
-                      <FontPreview fonts={selectedFonts} company="Loom" />
-                    </div>
-                  </ConstraintRow>
+                      </ConstraintRow>
 
-                  {/* Logo Lock */}
-                  <ConstraintRow
-                    title="Logo Lock"
-                    description="Set the approved organization logo. This logo is used across all graphic templates and cannot be changed by users."
-                    enabled={branding.logoLock}
-                    onToggle={() => toggleBranding('logoLock')}
-                    isLast={false}
-                  >
-                    <ImageUploader
-                      value={logoFile}
-                      onChange={v => { setLogoFile(v); setDirty(true) }}
-                      label="Upload organization logo"
-                      hint="PNG, SVG or JPG · Displayed at original aspect ratio"
-                    />
-                  </ConstraintRow>
+                      {/* Logo Lock */}
+                      <ConstraintRow
+                        title="Logo Lock"
+                        description="Set the approved organization logo. This logo is used across all graphic templates and cannot be changed by users."
+                        enabled={branding.logoLock}
+                        onToggle={() => toggleBranding('logoLock')}
+                        isLast={false}
+                      >
+                        <ImageUploader
+                          value={logoFile}
+                          onChange={v => { setLogoFile(v); setDirty(true) }}
+                          label="Upload organization logo"
+                          hint="PNG, SVG or JPG · Displayed at original aspect ratio"
+                        />
+                      </ConstraintRow>
 
-                  {/* Custom Team Graphics */}
-                  <ConstraintRow
-                    title="Custom Team Graphics"
-                    description="Allow users to access and activate team-tier custom graphic templates created for your organization."
-                    enabled={branding.customGraphics}
-                    onToggle={() => toggleBranding('customGraphics')}
-                    isLast={true}
-                  >
-                    <div className="flex items-center gap-[8px]">
-                      <div className="w-[6px] h-[6px] rounded-full shrink-0" style={{ background: '#4ade80' }} />
-                      <p className="text-[12px]" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                        <span className="text-[#fafaf9] font-medium">3 custom templates</span> available for this workspace —
-                        users will see them in their graphic panel.
-                      </p>
-                    </div>
-                  </ConstraintRow>
-                </SectionCard>
+                      {/* Custom Team Graphics */}
+                      <ConstraintRow
+                        title="Custom Team Graphics"
+                        description="Allow users to access and activate team-tier custom graphic templates created for your organization."
+                        enabled={branding.customGraphics}
+                        onToggle={() => toggleBranding('customGraphics')}
+                        isLast={true}
+                      >
+                        <div className="flex items-center gap-[8px]">
+                          <div className="w-[6px] h-[6px] rounded-full shrink-0" style={{ background: '#4ade80' }} />
+                          <p className="text-[12px]" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                            <span className="text-[#fafaf9] font-medium">3 custom templates</span> available for this workspace —
+                            users will see them in their graphic panel.
+                          </p>
+                        </div>
+                      </ConstraintRow>
+                    </SectionCard>
+                  </div>
+
+                  {/* Single shared preview for the entire branding section */}
+                  <ThemePreview themes={brandThemes} company="Loom" activeColors={activeSwatchColors} />
+                </div>
               </>
             )}
           </div>}
