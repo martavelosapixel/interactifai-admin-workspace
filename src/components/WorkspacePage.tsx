@@ -2417,31 +2417,19 @@ function EnterpriseBrandingGuidelines({ themes, fonts }: { themes: ColorTheme[];
                               ? colors.map((c, i) => {
                                   const isSelected = selIdx === i
                                   return (
-                                    <button
+                                    <div
                                       key={i}
                                       onClick={() => handleSwatchClick(theme.id, slotKey, i)}
-                                      className="relative border-0 p-0 cursor-pointer transition-transform"
+                                      className="cursor-pointer"
                                       style={{
-                                        width: 24, height: 24, borderRadius: 7,
+                                        width: 28, height: 28, borderRadius: 7,
                                         background: c,
                                         flexShrink: 0,
-                                        outline: isSelected ? `2.5px solid ${c}` : '2.5px solid transparent',
-                                        outlineOffset: 2,
-                                        boxShadow: isSelected ? `0 0 0 1px rgba(255,255,255,0.35)` : '0 0 0 1.5px rgba(255,255,255,0.08)',
-                                        transform: isSelected ? 'scale(1.08)' : 'scale(1)',
+                                        border: isSelected ? '2px solid rgba(0,0,0,0.5)' : '2px solid rgba(255,255,255,0.15)',
+                                        boxShadow: isSelected ? '0 0 0 2.5px #0283ff' : 'none',
+                                        transition: 'border-color 0.15s, box-shadow 0.15s',
                                       }}
-                                    >
-                                      {isSelected && (
-                                        <span
-                                          className="absolute inset-0 flex items-center justify-center rounded-[6px]"
-                                          style={{ background: 'rgba(0,0,0,0.18)' }}
-                                        >
-                                          <svg width="9" height="7" viewBox="0 0 9 7" fill="none">
-                                            <path d="M1 3.5L3.5 6L8 1" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                                          </svg>
-                                        </span>
-                                      )}
-                                    </button>
+                                    />
                                   )
                                 })
                               : <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.2)' }}>—</span>
