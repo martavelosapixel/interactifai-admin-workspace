@@ -1249,6 +1249,167 @@ function RequestUpdateModal({ asset, onClose }: { asset: string; onClose: () => 
   )
 }
 
+// ─── Contact Services Modal ───────────────────────────────────────────────────
+
+function ContactServicesModal({ onClose }: { onClose: () => void }) {
+  const [message, setMessage] = useState('')
+  const [sent, setSent] = useState(false)
+
+  const handleSend = () => {
+    if (!message.trim()) return
+    setSent(true)
+    setTimeout(onClose, 1800)
+  }
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center"
+      style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)' }}
+      onClick={e => { if (e.target === e.currentTarget) onClose() }}
+    >
+      <div
+        className="flex flex-col rounded-[14px] w-[440px] overflow-hidden"
+        style={{ background: '#16181d', border: '1px solid rgba(255,255,255,0.09)', boxShadow: '0 24px 48px rgba(0,0,0,0.55)' }}
+      >
+        {sent ? (
+          <div className="flex flex-col items-center gap-[14px] px-[32px] py-[40px] text-center">
+            <div className="w-[44px] h-[44px] rounded-full flex items-center justify-center" style={{ background: 'rgba(74,222,128,0.1)' }}>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M4.5 10.5L8.5 14.5L15.5 7" stroke="#4ade80" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <div>
+              <p className="font-semibold text-[15px] text-[#fafaf9] mb-[5px]">Request sent</p>
+              <p className="text-[13px] leading-[19px]" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                Your services representative will review your request and be in touch within 1–2 business days.
+              </p>
+            </div>
+            <button
+              onClick={onClose}
+              className="mt-[4px] px-[22px] py-[9px] rounded-[8px] border-0 cursor-pointer text-[13px] font-medium"
+              style={{ background: 'rgba(255,255,255,0.08)', color: '#fafaf9' }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.13)' }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)' }}
+            >
+              Done
+            </button>
+          </div>
+        ) : (
+          <>
+            {/* Header */}
+            <div className="flex items-start justify-between px-[22px] pt-[20px] pb-[16px]" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+              <div>
+                <p className="font-semibold text-[14px] text-[#fafaf9] mb-[3px]">Contact Services Representative</p>
+                <p className="text-[12px]" style={{ color: 'rgba(255,255,255,0.4)' }}>Request branding changes from your managed services team</p>
+              </div>
+              <button
+                onClick={onClose}
+                className="flex items-center justify-center w-[26px] h-[26px] rounded-[6px] border-0 cursor-pointer transition-colors shrink-0 mt-[1px]"
+                style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.5)' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = '#fafaf9' }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = 'rgba(255,255,255,0.5)' }}
+              >
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                  <path d="M1.5 1.5L8.5 8.5M8.5 1.5L1.5 8.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Rep card */}
+            <div className="px-[22px] py-[16px]" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+              <div
+                className="flex items-center gap-[12px] px-[14px] py-[12px] rounded-[10px]"
+                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+              >
+                <div
+                  className="w-[38px] h-[38px] rounded-full flex items-center justify-center shrink-0 text-[12px] font-bold text-white"
+                  style={{ background: 'linear-gradient(135deg, #615fff 0%, #0283ff 100%)' }}
+                >
+                  AJ
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-[13px] text-[#fafaf9] leading-[16px]">Alex Johnson</p>
+                  <p className="text-[11px] leading-[14px]" style={{ color: 'rgba(255,255,255,0.4)' }}>Enterprise Services Manager</p>
+                  <p className="text-[11px] leading-[15px]" style={{ color: '#a5a3ff' }}>alex.j@enterprise.breezy.com</p>
+                </div>
+                <div
+                  className="flex items-center gap-[5px] px-[8px] py-[4px] rounded-[6px] shrink-0"
+                  style={{ background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.2)' }}
+                >
+                  <div className="w-[5px] h-[5px] rounded-full" style={{ background: '#4ade80' }} />
+                  <span className="text-[10px] font-medium" style={{ color: '#4ade80' }}>Available</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Body */}
+            <div className="px-[22px] py-[18px] flex flex-col gap-[12px]">
+              <div className="flex flex-col gap-[6px]">
+                <label className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.3)' }}>To</label>
+                <div
+                  className="flex items-center gap-[8px] px-[12px] py-[8px] rounded-[8px]"
+                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+                >
+                  <div
+                    className="w-[22px] h-[22px] rounded-full flex items-center justify-center shrink-0 text-[9px] font-bold text-white"
+                    style={{ background: 'linear-gradient(135deg, #615fff 0%, #0283ff 100%)' }}
+                  >
+                    AJ
+                  </div>
+                  <span className="text-[12px]" style={{ color: 'rgba(255,255,255,0.7)' }}>Brand Services Team</span>
+                  <span className="text-[11px] ml-auto" style={{ color: 'rgba(255,255,255,0.25)' }}>alex.j@enterprise.breezy.com</span>
+                </div>
+              </div>
+              <div className="flex flex-col gap-[6px]">
+                <label className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.3)' }}>Message</label>
+                <textarea
+                  autoFocus
+                  rows={4}
+                  placeholder="Describe the branding changes you'd like to request…"
+                  value={message}
+                  onChange={e => setMessage(e.target.value)}
+                  className="resize-none rounded-[8px] text-[13px] leading-[18px] px-[12px] py-[10px] outline-none transition-colors"
+                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', color: '#fafaf9', fontFamily: 'inherit' }}
+                  onFocus={e => { e.currentTarget.style.border = '1px solid rgba(97,95,255,0.5)' }}
+                  onBlur={e => { e.currentTarget.style.border = '1px solid rgba(255,255,255,0.07)' }}
+                />
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-end gap-[8px] px-[22px] pb-[20px]">
+              <button
+                onClick={onClose}
+                className="h-[34px] px-[16px] rounded-[8px] border-0 cursor-pointer text-[13px] font-medium transition-colors"
+                style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.55)' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = '#fafaf9' }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = 'rgba(255,255,255,0.55)' }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSend}
+                className="flex items-center gap-[6px] h-[34px] px-[16px] rounded-[8px] border-0 cursor-pointer text-[13px] font-medium transition-all"
+                style={{
+                  background: message.trim() ? '#615fff' : 'rgba(97,95,255,0.25)',
+                  color: message.trim() ? '#fff' : 'rgba(255,255,255,0.3)',
+                  cursor: message.trim() ? 'pointer' : 'default',
+                }}
+              >
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path d="M1.5 6H10.5M7 2.5L10.5 6L7 9.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Send Request
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>,
+    document.body
+  )
+}
+
 // ─── Constraint Row ───────────────────────────────────────────────────────────
 
 interface ConstraintRowProps {
@@ -1721,7 +1882,7 @@ function ColorPickerPopup({ color, onColorChange, onDelete, onClose, anchorRect 
   }
 
   // Position: prefer below anchor, shift left if overflows right
-  const PICKER_W = 236, PICKER_H = 340
+  const PICKER_W = 236
   const top = anchorRect.bottom + 8
   let left = anchorRect.left
   if (left + PICKER_W > window.innerWidth - 8) left = window.innerWidth - PICKER_W - 8
@@ -1870,15 +2031,23 @@ function ColorPickerPopup({ color, onColorChange, onDelete, onClose, anchorRect 
 // ─── Swatch row helper (shared across theme palette slots) ───────────────────
 
 function SwatchRow({
-  colors, onEdit, onRemove, onAdd,
+  colors, onEdit, onRemove, onAdd, onSelect,
 }: {
   colors: string[]
   onEdit: (i: number, color: string) => void
   onRemove: (i: number) => void
   onAdd: (color: string) => void
+  onSelect?: (color: string | null) => void
 }) {
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null)
   const [editing, setEditing] = useState<{ idx: number; rect: DOMRect } | null>(null)
+
+  const handleSelect = (i: number) => {
+    const next = selectedIdx === i ? null : i
+    setSelectedIdx(next)
+    setEditing(null)
+    onSelect?.(next !== null ? colors[next] : null)
+  }
 
   return (
     <div className="flex items-center flex-wrap gap-[8px]">
@@ -1896,7 +2065,7 @@ function SwatchRow({
               boxShadow: isSelected ? '0 0 0 2.5px #0283ff' : 'none',
               transition: 'border-color 0.15s, box-shadow 0.15s',
             }}
-            onClick={() => { setSelectedIdx(isSelected ? null : i); setEditing(null) }}
+            onClick={() => handleSelect(i)}
           >
             {/* Edit overlay — only visible on hover when swatch is selected */}
             {isSelected && (
@@ -1938,7 +2107,7 @@ function SwatchRow({
               color={color}
               anchorRect={editing.rect}
               onColorChange={c => onEdit(i, c)}
-              onDelete={() => { onRemove(i); setEditing(null); setSelectedIdx(null) }}
+              onDelete={() => { onRemove(i); setEditing(null); setSelectedIdx(null); onSelect?.(null) }}
               onClose={() => setEditing(null)}
             />
           )}
@@ -1955,6 +2124,7 @@ function SwatchRow({
 interface ColorThemeEditorProps {
   themes: ColorTheme[]
   onChange: (themes: ColorTheme[]) => void
+  onSwatchSelect?: (slot: 'primary' | 'secondary' | 'font', color: string | null) => void
 }
 
 const PALETTE_SLOTS = [
@@ -1963,7 +2133,7 @@ const PALETTE_SLOTS = [
   { key: 'font'      as const, label: 'Font Colors'      },
 ]
 
-function ColorThemeEditor({ themes, onChange }: ColorThemeEditorProps) {
+function ColorThemeEditor({ themes, onChange, onSwatchSelect }: ColorThemeEditorProps) {
   const updateThemeName = (id: string, name: string) =>
     onChange(themes.map(t => (t.id === id ? { ...t, name } : t)))
 
@@ -2039,6 +2209,7 @@ function ColorThemeEditor({ themes, onChange }: ColorThemeEditorProps) {
                   onEdit={(i, color) => editColor(theme.id, key, i, color)}
                   onRemove={i => removeColor(theme.id, key, i)}
                   onAdd={color => addColor(theme.id, key, color)}
+                  onSelect={color => onSwatchSelect?.(key, color)}
                 />
               </div>
             ))}
@@ -2122,14 +2293,18 @@ function ScoreBoardPreview({ primary, secondary, font }: { primary: string; seco
   )
 }
 
-function ThemePreview({ themes, company }: { themes: ColorTheme[]; company: string }) {
+function ThemePreview({ themes, company, activeColors }: {
+  themes: ColorTheme[]
+  company: string
+  activeColors?: { primary?: string | null; secondary?: string | null; font?: string | null }
+}) {
   const [graphicIdx, setGraphicIdx] = useState(0)
   const [themeIdx, setThemeIdx] = useState(0)
   const safeThemeIdx = Math.min(themeIdx, Math.max(0, themes.length - 1))
   const theme = themes[safeThemeIdx]
-  const primary   = theme?.primary[0]   ?? '#615fff'
-  const secondary = theme?.secondary[0] ?? '#ffa726'
-  const font      = theme?.font[0]      ?? '#fafaf9'
+  const primary   = activeColors?.primary   ?? theme?.primary[0]   ?? '#615fff'
+  const secondary = activeColors?.secondary ?? theme?.secondary[0] ?? '#ffa726'
+  const font      = activeColors?.font      ?? theme?.font[0]      ?? '#fafaf9'
   const graphic   = PREVIEW_GRAPHICS[graphicIdx]
 
   return (
@@ -2344,6 +2519,160 @@ function FontPreview({ fonts, company }: { fonts: string[]; company: string }) {
           </svg>
         </button>
       </div>
+    </div>
+  )
+}
+
+// ─── Enterprise Branding Guidelines ──────────────────────────────────────────
+
+function EnterpriseBrandingGuidelines({ themes, fonts }: { themes: ColorTheme[]; fonts: string[] }) {
+  const [contactOpen, setContactOpen] = useState(false)
+
+  return (
+    <div className="flex flex-col gap-[16px] pt-[24px]">
+
+      {/* Managed services notice */}
+      <div
+        className="flex items-center gap-[16px] px-[18px] py-[14px] rounded-[10px]"
+        style={{ background: 'rgba(97,95,255,0.07)', border: '1px solid rgba(97,95,255,0.18)' }}
+      >
+        <div
+          className="w-[38px] h-[38px] rounded-[10px] flex items-center justify-center shrink-0"
+          style={{ background: 'rgba(97,95,255,0.14)' }}
+        >
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M9 2L3 5V9.5C3 13 5.8 16.1 9 17C12.2 16.1 15 13 15 9.5V5L9 2Z" stroke="#a5a3ff" strokeWidth="1.4" strokeLinejoin="round" />
+            <path d="M6.5 9L8 10.5L11.5 7" stroke="#a5a3ff" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="font-semibold text-[13px] text-[#fafaf9] mb-[3px]">Managed by Enterprise Services</p>
+          <p className="text-[12px] leading-[17px]" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            All branding is configured and maintained by your dedicated Breezy Enterprise Services team. Contact your representative to request any changes.
+          </p>
+        </div>
+        <button
+          onClick={() => setContactOpen(true)}
+          className="flex items-center gap-[7px] px-[14px] py-[8px] rounded-[8px] border-0 cursor-pointer text-[12px] font-medium shrink-0 transition-colors"
+          style={{ background: 'rgba(97,95,255,0.15)', color: '#c4c3ff', border: '1px solid rgba(97,95,255,0.28)' }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(97,95,255,0.26)'; e.currentTarget.style.color = '#e0dfff' }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(97,95,255,0.15)'; e.currentTarget.style.color = '#c4c3ff' }}
+        >
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M1.5 6H10.5M7 2.5L10.5 6L7 9.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          Contact Representative
+        </button>
+      </div>
+
+      {/* Main content: brand assets + preview */}
+      <div className="flex gap-[16px] items-start">
+
+        {/* Left: read-only brand asset overview */}
+        <div className="flex-1 min-w-0 flex flex-col gap-[10px]">
+
+          {/* Brand Colors */}
+          <div className="rounded-[10px] overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.02)' }}>
+            <div className="flex items-center gap-[8px] px-[16px] py-[11px]" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                <circle cx="6.5" cy="6.5" r="5.5" stroke="rgba(255,255,255,0.35)" strokeWidth="1.2" />
+                <circle cx="4" cy="6.5" r="1.5" fill="rgba(255,255,255,0.35)" />
+                <circle cx="6.5" cy="4" r="1.5" fill="rgba(255,255,255,0.35)" />
+                <circle cx="9" cy="6.5" r="1.5" fill="rgba(255,255,255,0.35)" />
+              </svg>
+              <span className="text-[11px] font-semibold uppercase tracking-wide" style={{ color: 'rgba(255,255,255,0.35)' }}>Brand Colors</span>
+              <div className="ml-auto flex items-center gap-[5px] px-[8px] py-[3px] rounded-[5px]" style={{ background: 'rgba(74,222,128,0.08)', border: '1px solid rgba(74,222,128,0.15)' }}>
+                <div className="w-[4px] h-[4px] rounded-full" style={{ background: '#4ade80' }} />
+                <span className="text-[10px] font-medium" style={{ color: '#4ade80' }}>Active</span>
+              </div>
+            </div>
+            <div className="flex flex-col">
+              {themes.map((theme, ti) => (
+                <div key={theme.id} className="px-[16px] py-[12px]" style={ti > 0 ? { borderTop: '1px solid rgba(255,255,255,0.04)' } : undefined}>
+                  <p className="text-[12px] font-semibold text-[#fafaf9] mb-[10px]">{theme.name}</p>
+                  <div className="flex flex-col gap-[7px]">
+                    {[
+                      { label: 'Primary',   colors: theme.primary   },
+                      { label: 'Secondary', colors: theme.secondary },
+                      { label: 'Font',      colors: theme.font      },
+                    ].map(({ label, colors }) => (
+                      <div key={label} className="flex items-center gap-[10px]">
+                        <span className="text-[10px] font-semibold uppercase tracking-wide shrink-0 w-[64px]" style={{ color: 'rgba(255,255,255,0.3)' }}>{label}</span>
+                        <div className="flex gap-[5px] flex-wrap">
+                          {colors.length > 0
+                            ? colors.map((c, i) => (
+                                <div key={i} style={{ width: 20, height: 20, borderRadius: 5, background: c, border: '1.5px solid rgba(255,255,255,0.1)', flexShrink: 0 }} />
+                              ))
+                            : <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.2)' }}>—</span>
+                          }
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Typography */}
+          <div className="rounded-[10px] overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.02)' }}>
+            <div className="flex items-center gap-[8px] px-[16px] py-[11px]" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                <path d="M2.5 3.5H10.5M6.5 3.5V9.5M4.5 9.5H8.5" stroke="rgba(255,255,255,0.35)" strokeWidth="1.3" strokeLinecap="round" />
+              </svg>
+              <span className="text-[11px] font-semibold uppercase tracking-wide" style={{ color: 'rgba(255,255,255,0.35)' }}>Typography</span>
+              <div className="ml-auto flex items-center gap-[5px] px-[8px] py-[3px] rounded-[5px]" style={{ background: 'rgba(74,222,128,0.08)', border: '1px solid rgba(74,222,128,0.15)' }}>
+                <div className="w-[4px] h-[4px] rounded-full" style={{ background: '#4ade80' }} />
+                <span className="text-[10px] font-medium" style={{ color: '#4ade80' }}>Active</span>
+              </div>
+            </div>
+            <div className="px-[16px] py-[14px] flex flex-wrap gap-[8px]">
+              {fonts.length > 0
+                ? fonts.map(font => (
+                    <div key={font} className="flex items-center gap-[9px] px-[12px] py-[8px] rounded-[8px]" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                      <span style={{ fontFamily: `'${font}', sans-serif`, fontSize: 15, color: '#fafaf9', lineHeight: 1 }}>Aa</span>
+                      <span className="text-[12px] font-medium" style={{ color: 'rgba(255,255,255,0.65)' }}>{font}</span>
+                    </div>
+                  ))
+                : <span className="text-[12px]" style={{ color: 'rgba(255,255,255,0.25)' }}>No fonts configured</span>
+              }
+            </div>
+          </div>
+
+          {/* Organization Logo */}
+          <div className="rounded-[10px] overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.02)' }}>
+            <div className="flex items-center gap-[8px] px-[16px] py-[11px]" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                <rect x="1.5" y="3.5" width="10" height="6" rx="1.5" stroke="rgba(255,255,255,0.35)" strokeWidth="1.2" />
+                <path d="M4.5 6.5H8.5M6.5 4.5V8.5" stroke="rgba(255,255,255,0.35)" strokeWidth="1.2" strokeLinecap="round" />
+              </svg>
+              <span className="text-[11px] font-semibold uppercase tracking-wide" style={{ color: 'rgba(255,255,255,0.35)' }}>Organization Logo</span>
+              <div className="ml-auto flex items-center gap-[5px] px-[8px] py-[3px] rounded-[5px]" style={{ background: 'rgba(74,222,128,0.08)', border: '1px solid rgba(74,222,128,0.15)' }}>
+                <div className="w-[4px] h-[4px] rounded-full" style={{ background: '#4ade80' }} />
+                <span className="text-[10px] font-medium" style={{ color: '#4ade80' }}>Active</span>
+              </div>
+            </div>
+            <div className="px-[16px] py-[14px] flex items-center gap-[12px]">
+              <div className="w-[44px] h-[28px] rounded-[7px] flex items-center justify-center shrink-0" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                <svg width="22" height="14" viewBox="0 0 22 14" fill="none">
+                  <rect x="1" y="1" width="20" height="12" rx="2" stroke="rgba(255,255,255,0.25)" strokeWidth="1" />
+                  <circle cx="7" cy="7" r="2.5" stroke="rgba(255,255,255,0.35)" strokeWidth="1" />
+                  <path d="M13 5H18M13 9H16" stroke="rgba(255,255,255,0.35)" strokeWidth="1" strokeLinecap="round" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-[13px] font-medium text-[#fafaf9]">Breezy Corp logo</p>
+                <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.4)' }}>Applied across all graphic templates</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right: Live Preview */}
+        <ThemePreview themes={themes} company="Breezy Corp" />
+      </div>
+
+      {contactOpen && <ContactServicesModal onClose={() => setContactOpen(false)} />}
     </div>
   )
 }
@@ -2641,8 +2970,10 @@ export default function WorkspacePage({ plan = 'enterprise' }: { plan?: Plan }) 
     setSaved(false)
   }
   const [dirty, setDirty] = useState(false)
+  const [activeSwatchColors, setActiveSwatchColors] = useState<{
+    primary?: string | null; secondary?: string | null; font?: string | null
+  }>({})
   const [saved, setSaved] = useState(false)
-  const [requestModal, setRequestModal] = useState<string | null>(null)
 
   const graphicsRef = useRef<HTMLDivElement>(null)
   const brandingRef = useRef<HTMLDivElement>(null)
@@ -3033,96 +3364,95 @@ export default function WorkspacePage({ plan = 'enterprise' }: { plan?: Plan }) 
 
           {/* ── Section 2: Branding Constraints ── */}
           {activeTab === 'branding' && <div ref={brandingRef}>
-            <div className="mb-[14px] pt-[24px]">
-              <h2 className="font-semibold text-[15px] text-[#fafaf9] mb-[4px]">
-                Branding Guidelines
-              </h2>
-              <p className="text-[13px] leading-[18px]" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                Enforce brand consistency across all meeting graphics. These settings apply
-                organization-wide and override individual user preferences.
-              </p>
-            </div>
-
-            {requestModal && <RequestUpdateModal asset={requestModal} onClose={() => setRequestModal(null)} />}
-
-            <SectionCard>
-              {/* Color Palette Lock */}
-              <ConstraintRow
-
-                title="Color Palette Lock"
-                description="Restrict users to organization-approved brand colors only. Users cannot set custom colors outside this palette."
-                enabled={branding.colorLock}
-                onToggle={() => toggleBranding('colorLock')}
-                isLast={false}
-                onRequestUpdate={plan === 'enterprise' ? () => setRequestModal('Color Palette Lock') : undefined}
-              >
-                <div className="flex gap-[14px] items-start">
-                  <div className="flex-1 min-w-0">
-                    <ColorThemeEditor themes={brandThemes} onChange={t => { setBrandThemes(t); setDirty(true) }} />
-                  </div>
-                  <ThemePreview themes={brandThemes} company={plan === 'team' ? 'Loom' : 'Breezy Corp'} />
-                </div>
-              </ConstraintRow>
-
-              {/* Font Override Lock */}
-              <ConstraintRow
-                title="Font Override Lock"
-                description="Prevent users from changing the default organization typeface in graphic templates."
-                enabled={branding.fontLock}
-                onToggle={() => toggleBranding('fontLock')}
-                isLast={false}
-                onRequestUpdate={plan === 'enterprise' ? () => setRequestModal('Font Override Lock') : undefined}
-              >
-                <div className="flex gap-[14px] items-start">
-                  <div className="flex-1 min-w-0">
-                    <FontManager
-                      selected={selectedFonts}
-                      onChange={f => { setSelectedFonts(f); setDirty(true) }}
-                    />
-                  </div>
-                  <FontPreview fonts={selectedFonts} company={plan === 'team' ? 'Loom' : 'Breezy Corp'} />
-                </div>
-              </ConstraintRow>
-
-              {/* Logo Lock */}
-              <ConstraintRow
-                title="Logo Lock"
-                description="Set the approved organization logo. This logo is used across all graphic templates and cannot be changed by users."
-                enabled={branding.logoLock}
-                onToggle={() => toggleBranding('logoLock')}
-                isLast={false}
-                onRequestUpdate={plan === 'enterprise' ? () => setRequestModal('Logo Lock') : undefined}
-              >
-                <ImageUploader
-                  value={logoFile}
-                  onChange={v => { setLogoFile(v); setDirty(true) }}
-                  label="Upload organization logo"
-                  hint="PNG, SVG or JPG · Displayed at original aspect ratio"
-                />
-              </ConstraintRow>
-
-              {/* Custom Team Graphics */}
-              <ConstraintRow
-
-                title="Custom Team Graphics"
-                description="Allow users to access and activate team-tier custom graphic templates created for your organization."
-                enabled={branding.customGraphics}
-                onToggle={() => toggleBranding('customGraphics')}
-                isLast={true}
-                onRequestUpdate={plan === 'enterprise' ? () => setRequestModal('Custom Team Graphics') : undefined}
-              >
-                <div className="flex items-center gap-[8px]">
-                  <div
-                    className="w-[6px] h-[6px] rounded-full shrink-0"
-                    style={{ background: '#4ade80' }}
-                  />
-                  <p className="text-[12px]" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                    <span className="text-[#fafaf9] font-medium">3 custom templates</span> available for this workspace —
-                    users will see them in their graphic panel.
+            {plan === 'enterprise' ? (
+              <EnterpriseBrandingGuidelines themes={brandThemes} fonts={selectedFonts} />
+            ) : (
+              <>
+                <div className="mb-[14px] pt-[24px]">
+                  <h2 className="font-semibold text-[15px] text-[#fafaf9] mb-[4px]">
+                    Branding Guidelines
+                  </h2>
+                  <p className="text-[13px] leading-[18px]" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                    Enforce brand consistency across all meeting graphics. These settings apply
+                    organization-wide and override individual user preferences.
                   </p>
                 </div>
-              </ConstraintRow>
-            </SectionCard>
+
+                <SectionCard>
+                  {/* Color Palette Lock */}
+                  <ConstraintRow
+                    title="Color Palette Lock"
+                    description="Restrict users to organization-approved brand colors only. Users cannot set custom colors outside this palette."
+                    enabled={branding.colorLock}
+                    onToggle={() => toggleBranding('colorLock')}
+                    isLast={false}
+                  >
+                    <div className="flex gap-[14px] items-start">
+                      <div className="flex-1 min-w-0">
+                        <ColorThemeEditor
+                          themes={brandThemes}
+                          onChange={t => { setBrandThemes(t); setDirty(true) }}
+                          onSwatchSelect={(slot, color) => setActiveSwatchColors(prev => ({ ...prev, [slot]: color }))}
+                        />
+                      </div>
+                      <ThemePreview themes={brandThemes} company="Loom" activeColors={activeSwatchColors} />
+                    </div>
+                  </ConstraintRow>
+
+                  {/* Font Override Lock */}
+                  <ConstraintRow
+                    title="Font Override Lock"
+                    description="Prevent users from changing the default organization typeface in graphic templates."
+                    enabled={branding.fontLock}
+                    onToggle={() => toggleBranding('fontLock')}
+                    isLast={false}
+                  >
+                    <div className="flex gap-[14px] items-start">
+                      <div className="flex-1 min-w-0">
+                        <FontManager
+                          selected={selectedFonts}
+                          onChange={f => { setSelectedFonts(f); setDirty(true) }}
+                        />
+                      </div>
+                      <FontPreview fonts={selectedFonts} company="Loom" />
+                    </div>
+                  </ConstraintRow>
+
+                  {/* Logo Lock */}
+                  <ConstraintRow
+                    title="Logo Lock"
+                    description="Set the approved organization logo. This logo is used across all graphic templates and cannot be changed by users."
+                    enabled={branding.logoLock}
+                    onToggle={() => toggleBranding('logoLock')}
+                    isLast={false}
+                  >
+                    <ImageUploader
+                      value={logoFile}
+                      onChange={v => { setLogoFile(v); setDirty(true) }}
+                      label="Upload organization logo"
+                      hint="PNG, SVG or JPG · Displayed at original aspect ratio"
+                    />
+                  </ConstraintRow>
+
+                  {/* Custom Team Graphics */}
+                  <ConstraintRow
+                    title="Custom Team Graphics"
+                    description="Allow users to access and activate team-tier custom graphic templates created for your organization."
+                    enabled={branding.customGraphics}
+                    onToggle={() => toggleBranding('customGraphics')}
+                    isLast={true}
+                  >
+                    <div className="flex items-center gap-[8px]">
+                      <div className="w-[6px] h-[6px] rounded-full shrink-0" style={{ background: '#4ade80' }} />
+                      <p className="text-[12px]" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                        <span className="text-[#fafaf9] font-medium">3 custom templates</span> available for this workspace —
+                        users will see them in their graphic panel.
+                      </p>
+                    </div>
+                  </ConstraintRow>
+                </SectionCard>
+              </>
+            )}
           </div>}
 
           {/* Bottom spacing */}
