@@ -2130,63 +2130,64 @@ const PREVIEW_GRAPHICS = [
   { id: 'score-board',  name: 'Score Board' },
 ]
 
-function NameTagPreview({ primary, secondary, company }: { primary: string; secondary: string; company: string }) {
+function NameTagPreview({ primary, secondary, company, fontFamily }: { primary: string; secondary: string; company: string; fontFamily?: string }) {
   return (
     <div style={{ width: 170, background: 'white', borderRadius: 12, overflow: 'hidden', boxShadow: '0 8px 24px rgba(0,0,0,0.6)' }}>
       <div style={{ height: 5, background: primary }} />
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px' }}>
         <div style={{ width: 38, height: 38, borderRadius: '50%', background: '#2a2b2e', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-          <span style={{ fontSize: 11, fontWeight: 700, color: secondary }}>JS</span>
+          <span style={{ fontSize: 11, fontWeight: 700, color: secondary, fontFamily }}>JS</span>
         </div>
         <div>
-          <p style={{ fontSize: 13, fontWeight: 700, color: '#1a1a1a', margin: 0, lineHeight: 1.2 }}>Jeff Smith</p>
-          <p style={{ fontSize: 10, color: '#888', margin: '3px 0 0', lineHeight: 1.2 }}>Product Designer</p>
-          <p style={{ fontSize: 10, fontWeight: 600, color: primary, margin: '3px 0 0', lineHeight: 1.2 }}>{company}</p>
+          <p style={{ fontSize: 13, fontWeight: 700, color: '#1a1a1a', margin: 0, lineHeight: 1.2, fontFamily }}>Jeff Smith</p>
+          <p style={{ fontSize: 10, color: '#888', margin: '3px 0 0', lineHeight: 1.2, fontFamily }}>Product Designer</p>
+          <p style={{ fontSize: 10, fontWeight: 600, color: primary, margin: '3px 0 0', lineHeight: 1.2, fontFamily }}>{company}</p>
         </div>
       </div>
     </div>
   )
 }
 
-function LowerThirdPreview({ primary, secondary, font, company }: { primary: string; secondary: string; font: string; company: string }) {
+function LowerThirdPreview({ primary, secondary, font, company, fontFamily }: { primary: string; secondary: string; font: string; company: string; fontFamily?: string }) {
   return (
     <div style={{ width: 170 }}>
       <div style={{ background: primary, padding: '7px 12px 5px' }}>
-        <p style={{ fontSize: 13, fontWeight: 700, color: font, margin: 0, lineHeight: 1.2 }}>Jeff Smith</p>
+        <p style={{ fontSize: 13, fontWeight: 700, color: font, margin: 0, lineHeight: 1.2, fontFamily }}>Jeff Smith</p>
       </div>
       <div style={{ background: 'rgba(20,21,24,0.92)', padding: '5px 12px 7px', borderLeft: `3px solid ${secondary}` }}>
-        <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.65)', margin: 0, lineHeight: 1.4 }}>Product Designer · {company}</p>
+        <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.65)', margin: 0, lineHeight: 1.4, fontFamily }}>Product Designer · {company}</p>
       </div>
     </div>
   )
 }
 
-function ScoreBoardPreview({ primary, secondary, font }: { primary: string; secondary: string; font: string }) {
+function ScoreBoardPreview({ primary, secondary, font, fontFamily }: { primary: string; secondary: string; font: string; fontFamily?: string }) {
   return (
     <div style={{ width: 170, background: 'rgba(20,21,24,0.95)', borderRadius: 8, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}>
       <div style={{ background: primary, padding: '5px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={{ fontSize: 9, fontWeight: 700, color: font, letterSpacing: '0.06em' }}>LIVE</span>
-        <span style={{ fontSize: 9, fontWeight: 700, color: font }}>Q1 · 12:34</span>
+        <span style={{ fontSize: 9, fontWeight: 700, color: font, letterSpacing: '0.06em', fontFamily }}>LIVE</span>
+        <span style={{ fontSize: 9, fontWeight: 700, color: font, fontFamily }}>Q1 · 12:34</span>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px' }}>
         <div style={{ textAlign: 'center' }}>
-          <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', margin: '0 0 3px', fontWeight: 600, letterSpacing: '0.05em' }}>HOME</p>
-          <p style={{ fontSize: 24, fontWeight: 800, color: '#fff', margin: 0, lineHeight: 1 }}>24</p>
+          <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', margin: '0 0 3px', fontWeight: 600, letterSpacing: '0.05em', fontFamily }}>HOME</p>
+          <p style={{ fontSize: 24, fontWeight: 800, color: '#fff', margin: 0, lineHeight: 1, fontFamily }}>24</p>
         </div>
-        <span style={{ fontSize: 12, color: secondary, fontWeight: 700 }}>VS</span>
+        <span style={{ fontSize: 12, color: secondary, fontWeight: 700, fontFamily }}>VS</span>
         <div style={{ textAlign: 'center' }}>
-          <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', margin: '0 0 3px', fontWeight: 600, letterSpacing: '0.05em' }}>AWAY</p>
-          <p style={{ fontSize: 24, fontWeight: 800, color: '#fff', margin: 0, lineHeight: 1 }}>17</p>
+          <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', margin: '0 0 3px', fontWeight: 600, letterSpacing: '0.05em', fontFamily }}>AWAY</p>
+          <p style={{ fontSize: 24, fontWeight: 800, color: '#fff', margin: 0, lineHeight: 1, fontFamily }}>17</p>
         </div>
       </div>
     </div>
   )
 }
 
-function ThemePreview({ themes, company, activeColors }: {
+function ThemePreview({ themes, company, activeColors, fontFamily }: {
   themes: ColorTheme[]
   company: string
   activeColors?: { primary?: string | null; secondary?: string | null; font?: string | null }
+  fontFamily?: string
 }) {
   const [graphicIdx, setGraphicIdx] = useState(0)
   const [themeIdx, setThemeIdx] = useState(0)
@@ -2196,6 +2197,13 @@ function ThemePreview({ themes, company, activeColors }: {
   const secondary = activeColors?.secondary ?? theme?.secondary[0] ?? '#ffa726'
   const font      = activeColors?.font      ?? theme?.font[0]      ?? '#fafaf9'
   const graphic   = PREVIEW_GRAPHICS[graphicIdx]
+
+  useEffect(() => {
+    if (fontFamily) {
+      const name = fontFamily.replace(/'/g, '').split(',')[0].trim()
+      injectGoogleFont(name)
+    }
+  }, [fontFamily])
 
   return (
     <div
@@ -2233,9 +2241,9 @@ function ThemePreview({ themes, company, activeColors }: {
         className="flex-1 flex items-center justify-center py-[22px] px-[14px]"
         style={{ background: '#141518', minHeight: 148 }}
       >
-        {graphic.id === 'name-tag'    && <NameTagPreview    primary={primary} secondary={secondary} company={company} />}
-        {graphic.id === 'lower-third' && <LowerThirdPreview primary={primary} secondary={secondary} font={font} company={company} />}
-        {graphic.id === 'score-board' && <ScoreBoardPreview primary={primary} secondary={secondary} font={font} />}
+        {graphic.id === 'name-tag'    && <NameTagPreview    primary={primary} secondary={secondary} company={company} fontFamily={fontFamily} />}
+        {graphic.id === 'lower-third' && <LowerThirdPreview primary={primary} secondary={secondary} font={font} company={company} fontFamily={fontFamily} />}
+        {graphic.id === 'score-board' && <ScoreBoardPreview primary={primary} secondary={secondary} font={font} fontFamily={fontFamily} />}
       </div>
 
       {/* Navigation */}
@@ -2416,7 +2424,7 @@ function EnterpriseBrandingGuidelines({ themes, fonts }: { themes: ColorTheme[];
         </div>
 
         {/* Right: Live Preview */}
-        <ThemePreview themes={themes} company="Breezy Corp" />
+        <ThemePreview themes={themes} company="Breezy Corp" fontFamily={fonts[0] ? `'${fonts[0]}', sans-serif` : undefined} />
       </div>
 
       {contactOpen && <ContactServicesModal onClose={() => setContactOpen(false)} />}
@@ -3200,7 +3208,7 @@ export default function WorkspacePage({ plan = 'enterprise' }: { plan?: Plan }) 
                   </div>
 
                   {/* Single shared preview for the entire branding section */}
-                  <ThemePreview themes={brandThemes} company="Loom" activeColors={activeSwatchColors} />
+                  <ThemePreview themes={brandThemes} company="Loom" activeColors={activeSwatchColors} fontFamily={selectedFonts[0] ? `'${selectedFonts[0]}', sans-serif` : undefined} />
                 </div>
               </>
             )}
