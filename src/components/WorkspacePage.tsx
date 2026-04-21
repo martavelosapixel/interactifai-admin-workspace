@@ -1917,23 +1917,6 @@ function SwatchRow({
 
           {/* Hex tooltip — always shows on hover (selected or not) */}
           <div className="absolute bottom-[36px] left-1/2 -translate-x-1/2 hidden group-hover/swatch:flex flex-col items-center pointer-events-none z-20">
-            {/* Edit button — only when selected */}
-            {isSelected && (
-              <div
-                className="pointer-events-auto mb-[4px] w-[28px] h-[28px] rounded-[7px] flex items-center justify-center cursor-pointer shadow-md"
-                style={{ background: '#ffffff' }}
-                onClick={e => {
-                  e.stopPropagation()
-                  const rect = (e.currentTarget.closest('.group\\/swatch') as HTMLElement).getBoundingClientRect()
-                  setEditing(prev => prev?.idx === i ? null : { idx: i, rect })
-                }}
-              >
-                <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
-                  <path d="M1.5 10.5H4L9.5 5L7 2.5L1.5 8V10.5Z" stroke="#222" strokeWidth="1.5" strokeLinejoin="round" />
-                  <path d="M7 2.5L9.5 5" stroke="#222" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
-              </div>
-            )}
             <div
               className="px-[7px] py-[3px] rounded-[5px] whitespace-nowrap"
               style={{ background: '#2a2b2e', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}
