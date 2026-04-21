@@ -1619,25 +1619,28 @@ function FontManager({ selected, onChange }: FontManagerProps) {
 // ─── Color palette editor ─────────────────────────────────────────────────────
 
 function AddColorButton({ onAdd }: { onAdd: (color: string) => void }) {
-  const inputRef = useRef<HTMLInputElement>(null)
-  useEffect(() => {
-    const input = inputRef.current
-    if (!input) return
-    const handleChange = () => onAdd(input.value)
-    input.addEventListener('change', handleChange)
-    return () => input.removeEventListener('change', handleChange)
-  }, [onAdd])
+  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null)
+  const [pendingColor, setPendingColor] = useState('#888888')
+  const btnRef = useRef<HTMLButtonElement>(null)
+
+  const handleOpen = () => {
+    if (btnRef.current) {
+      setPendingColor('#888888')
+      setAnchorRect(btnRef.current.getBoundingClientRect())
+    }
+  }
+
+  const handleClose = () => {
+    onAdd(pendingColor)
+    setAnchorRect(null)
+  }
+
   return (
     <div className="relative">
-      <input
-        ref={inputRef}
-        type="color"
-        defaultValue="#888888"
-        className="sr-only"
-      />
       <button
-        onClick={() => inputRef.current?.click()}
-        className="w-[32px] h-[32px] rounded-[8px] flex items-center justify-center cursor-pointer border-0 transition-colors"
+        ref={btnRef}
+        onClick={handleOpen}
+        className="w-[28px] h-[28px] rounded-[7px] flex items-center justify-center cursor-pointer border-0 transition-colors"
         style={{
           background: 'rgba(255,255,255,0.06)',
           border: '1.5px dashed rgba(255,255,255,0.18)',
@@ -1654,6 +1657,15 @@ function AddColorButton({ onAdd }: { onAdd: (color: string) => void }) {
       >
         <PlusSmIcon />
       </button>
+
+      {anchorRect && (
+        <ColorPickerPopup
+          color={pendingColor}
+          anchorRect={anchorRect}
+          onColorChange={c => setPendingColor(c)}
+          onClose={handleClose}
+        />
+      )}
     </div>
   )
 }
@@ -1692,7 +1704,7 @@ function hueColor(h: number): string { return hsvToHex(h, 1, 1) }
 function ColorPickerPopup({ color, onColorChange, onDelete, onClose, anchorRect }: {
   color: string
   onColorChange: (c: string) => void
-  onDelete: () => void
+  onDelete?: () => void
   onClose: () => void
   anchorRect: DOMRect
 }) {
@@ -1880,23 +1892,25 @@ function ColorPickerPopup({ color, onColorChange, onDelete, onClose, anchorRect 
             </div>
           </div>
 
-          {/* Delete color */}
-          <button
-            onClick={() => { onDelete(); onClose() }}
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-              width: '100%', padding: '8px', borderRadius: 8, border: 'none',
-              background: 'rgba(239,68,68,0.08)', color: '#f87171',
-              fontSize: 12, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit',
-            }}
-            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(239,68,68,0.16)' }}
-            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(239,68,68,0.08)' }}
-          >
-            <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
-              <path d="M1.5 3H9.5M4 3V2H7V3M4.5 5V8.5M6.5 5V8.5M2 3L2.5 9.5H8.5L9 3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            Delete color
-          </button>
+          {/* Delete color — only shown when onDelete is provided (edit mode, not add mode) */}
+          {onDelete && (
+            <button
+              onClick={() => { onDelete(); onClose() }}
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                width: '100%', padding: '8px', borderRadius: 8, border: 'none',
+                background: 'rgba(239,68,68,0.08)', color: '#f87171',
+                fontSize: 12, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(239,68,68,0.16)' }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(239,68,68,0.08)' }}
+            >
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                <path d="M1.5 3H9.5M4 3V2H7V3M4.5 5V8.5M6.5 5V8.5M2 3L2.5 9.5H8.5L9 3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Delete color
+            </button>
+          )}
         </div>
       </div>
     </>,
