@@ -1672,11 +1672,11 @@ function ColorPickerPopup({ color, onColorChange, onDelete, onClose, anchorRect 
   const [h, s, v] = hsv
   const currentHex = hsvToHex(h, s, v)
 
-  // Notify parent on every HSV change
-  useEffect(() => {
-    onColorChange(currentHex)
-    setHexInput(currentHex.replace('#', '').toUpperCase())
-  }, [currentHex])
+  const notify = (newH: number, newS: number, newV: number) => {
+    const hex = hsvToHex(newH, newS, newV)
+    setHexInput(hex.replace('#', '').toUpperCase())
+    onColorChange(hex)
+  }
 
   const applyGrad = (e: MouseEvent | React.MouseEvent) => {
     if (!gradRef.current) return
@@ -1684,12 +1684,14 @@ function ColorPickerPopup({ color, onColorChange, onDelete, onClose, anchorRect 
     const ns = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width))
     const nv = Math.max(0, Math.min(1, 1 - (e.clientY - r.top) / r.height))
     setHsv([hsvRef.current[0], ns, nv])
+    notify(hsvRef.current[0], ns, nv)
   }
   const applyHue = (e: MouseEvent | React.MouseEvent) => {
     if (!hueRef.current) return
     const r = hueRef.current.getBoundingClientRect()
     const nh = Math.max(0, Math.min(360, (e.clientX - r.left) / r.width * 360))
     setHsv([nh, hsvRef.current[1], hsvRef.current[2]])
+    notify(nh, hsvRef.current[1], hsvRef.current[2])
   }
   const applyOp = (e: MouseEvent | React.MouseEvent) => {
     if (!opRef.current) return
@@ -1711,7 +1713,11 @@ function ColorPickerPopup({ color, onColorChange, onDelete, onClose, anchorRect 
 
   const handleHexInput = (val: string) => {
     setHexInput(val.toUpperCase())
-    if (/^[0-9A-Fa-f]{6}$/.test(val)) setHsv(hexToHsv('#' + val))
+    if (/^[0-9A-Fa-f]{6}$/.test(val)) {
+      const newHsv = hexToHsv('#' + val)
+      setHsv(newHsv)
+      onColorChange('#' + val.toUpperCase())
+    }
   }
 
   // Position: prefer below anchor, shift left if overflows right
