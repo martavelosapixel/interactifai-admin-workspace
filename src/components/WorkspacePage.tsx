@@ -2042,6 +2042,16 @@ function ColorThemeEditor({ themes, onChange, onSwatchSelect }: ColorThemeEditor
   const addTheme = () =>
     onChange([...themes, { id: `theme-${Date.now()}`, name: 'New Theme', primary: [], secondary: [], font: [] }])
 
+  const duplicateTheme = (id: string) => {
+    const src = themes.find(t => t.id === id)
+    if (!src) return
+    const copy = { ...src, id: `theme-${Date.now()}`, name: `${src.name} Copy` }
+    const idx = themes.findIndex(t => t.id === id)
+    const next = [...themes]
+    next.splice(idx + 1, 0, copy)
+    onChange(next)
+  }
+
   return (
     <div className="flex flex-col gap-[12px]">
       {themes.map(theme => (
@@ -2069,18 +2079,35 @@ function ColorThemeEditor({ themes, onChange, onSwatchSelect }: ColorThemeEditor
                 <path d="M1 6.5L5.5 2L7 3.5L2.5 8H1V6.5Z" stroke="currentColor" strokeWidth="1.1" strokeLinejoin="round" />
               </svg>
             </div>
-            <button
-              onClick={() => removeTheme(theme.id)}
-              className="opacity-0 group-hover/theme:opacity-100 transition-opacity flex items-center gap-[4px] px-[6px] py-[3px] rounded-[5px] border-0 cursor-pointer text-[10px] font-medium shrink-0"
-              style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.35)' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(239,68,68,0.12)'; (e.currentTarget as HTMLButtonElement).style.color = '#f87171' }}
-              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)'; (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.35)' }}
-            >
-              <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
-                <path d="M1 1L7 7M7 1L1 7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
-              </svg>
-              Remove
-            </button>
+            <div className="opacity-0 group-hover/theme:opacity-100 transition-opacity flex items-center gap-[4px] shrink-0">
+              {/* Duplicate */}
+              <button
+                onClick={() => duplicateTheme(theme.id)}
+                className="flex items-center gap-[4px] px-[6px] py-[3px] rounded-[5px] border-0 cursor-pointer text-[10px] font-medium"
+                style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.35)' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.09)'; (e.currentTarget as HTMLButtonElement).style.color = '#fafaf9' }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)'; (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.35)' }}
+              >
+                <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
+                  <rect x="3" y="3" width="5.5" height="5.5" rx="1.2" stroke="currentColor" strokeWidth="1.1" />
+                  <path d="M1.5 6V1.5H6" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Duplicate
+              </button>
+              {/* Remove */}
+              <button
+                onClick={() => removeTheme(theme.id)}
+                className="flex items-center gap-[4px] px-[6px] py-[3px] rounded-[5px] border-0 cursor-pointer text-[10px] font-medium"
+                style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.35)' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(239,68,68,0.12)'; (e.currentTarget as HTMLButtonElement).style.color = '#f87171' }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)'; (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.35)' }}
+              >
+                <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
+                  <path d="M1 1L7 7M7 1L1 7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+                </svg>
+                Remove
+              </button>
+            </div>
           </div>
 
           {/* Three fixed palette slots */}
