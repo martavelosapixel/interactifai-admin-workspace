@@ -808,9 +808,12 @@ function GraphicRow({ graphic, enabled, onToggle, isLast, children, permissions,
         </div>
       )}
 
-      {/* Expandable children (e.g. social feed platforms) */}
-      {enabled && children && (
-        <div className="px-[20px] pb-[16px]">
+      {/* Children config — always rendered so the row height never changes on toggle */}
+      {children && (
+        <div
+          className="px-[20px] pb-[16px]"
+          style={{ opacity: enabled ? 1 : 0.38, pointerEvents: enabled ? 'auto' : 'none', transition: 'opacity 0.15s' }}
+        >
           {children}
         </div>
       )}
