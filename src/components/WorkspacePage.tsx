@@ -746,7 +746,7 @@ function GraphicRow({ graphic, enabled, onToggle, isLast, children, permissions,
       onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
     >
       {/* Main row */}
-      <div className="flex items-center gap-[12px] px-[20px] py-[10px]">
+      <div className={`flex items-center gap-[12px] px-[20px] ${children ? 'pt-[10px] pb-[8px]' : 'py-[10px]'}`}>
         {/* Name + description */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-[8px] mb-[2px]">
