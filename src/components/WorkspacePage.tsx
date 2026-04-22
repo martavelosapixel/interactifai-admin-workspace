@@ -746,7 +746,7 @@ function GraphicRow({ graphic, enabled, onToggle, isLast, children, permissions,
       onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
     >
       {/* Main row */}
-      <div className={`flex items-center gap-[12px] px-[20px] ${children ? 'pt-[10px] pb-[8px]' : 'py-[10px]'}`}>
+      <div className={`flex items-center gap-[12px] px-[20px] ${children ? 'pt-[7px] pb-[6px]' : 'py-[7px]'}`}>
         {/* Name + description */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-[8px] mb-[2px]">
@@ -811,7 +811,7 @@ function GraphicRow({ graphic, enabled, onToggle, isLast, children, permissions,
       {/* Children config — always rendered so the row height never changes on toggle */}
       {children && (
         <div
-          className="px-[20px] pb-[16px]"
+          className="px-[20px] pb-[12px]"
           style={{ opacity: enabled ? 1 : 0.38, pointerEvents: enabled ? 'auto' : 'none', transition: 'opacity 0.15s' }}
         >
           {children}
